@@ -31,5 +31,7 @@ module MovieDbApi
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+    config.autoload_paths << "#{Rails.root}/lib"
+    Dir["#{Rails.root}/lib/**/*.rb"].each { |file| require file }
   end
 end
