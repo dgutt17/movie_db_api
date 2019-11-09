@@ -6,7 +6,7 @@ module Neo4j
             cert_store = OpenSSL::X509::Store.new
             path_to_certificate = ENV["NEO4J_CERT_PATH"]
             cert_store.add_file(path_to_certificate)
-            bolt_path = 'bolt://neo4j:' + ENV["NEO4J_PASSWORD"] + '@localhost' + ENV["NEO4J_PORT"]
+            bolt_path = 'bolt://neo4j:' + ENV["NEO4J_PASSWORD"] + '@localhost:' + ENV["NEO4J_PORT"]
             @bolt_adaptor = Neo4j::Core::CypherSession::Adaptors::Bolt.new(bolt_path, timeout: 10, ssl: {cert_store: cert_store})
         end
 
