@@ -7,6 +7,6 @@ Rails.application.load_tasks
 
 namespace :import do
     task :create_months => :environment do 
-        ImdbParser::StaticNodes.create_month_nodes()
+        ImdbParser::MonthNodes.create
     end
 end
