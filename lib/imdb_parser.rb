@@ -10,8 +10,8 @@ module ImdbParser
     end
 
     def create_indices
-        driver = Neo4j::Driver.new
-        session = driver.session
+        binding.pry
+        session = NEO4J_DRIVER.session
 
         session.query('CREATE INDEX ON :Month(value)')
         session.query('CREATE INDEX ON :Day(value)')

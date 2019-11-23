@@ -1,19 +1,19 @@
 module ImdbParser
     module StaticNodes
         def create_month_nodes
-            driver = Neo4j::Driver.new
-            neo4j_session = driver.session
+            binding.pry
+            neo4j_session = NEO4J_DRIVER.session
 
             month = 1
             while month <= 12 do
                 neo4j_session.query("CREATE (n:Month {value: #{month}});")
                 month += 1
             end
+            neo4j_session.close
         end
 
         def create_day_nodes
-            driver = Neo4j::Driver.new
-            neo4j_session = driver.session
+            neo4j_session = NEO4J_DRIVER.session
 
             day = 1
             while day <= 31 do
@@ -21,11 +21,11 @@ module ImdbParser
                 neo4j_session.query(query_str)
                 day += 1
             end
+            neo4j_session.close
         end
 
         def create_imdb_score_nodes
-            driver = Neo4j::Driver.new
-            neo4j_session = driver.session
+            neo4j_session = NEO4J_DRIVER.session
 
             score = 0
 
@@ -34,11 +34,11 @@ module ImdbParser
                 neo4j_session.query(query_str)
                 score += 1
             end
+            neo4j_session.close
         end
 
         def create_year_nodes
-            driver = Neo4j::Driver.new
-            neo4j_session = driver.session
+            neo4j_session = NEO4J_DRIVER.session
 
             year = 1900
 
@@ -47,6 +47,7 @@ module ImdbParser
                 neo4j_session.query(query_str)
                 year += 1
             end
+            neo4j_session.close
         end
     end
 end

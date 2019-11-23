@@ -8,7 +8,7 @@ module ImdbParser
             @release_year = movie[5]
             @run_time = movie[7]
             @genres = movie.last.split(",")
-            @session = Neo4j::Driver.new.session
+            @session = NEO4J_DRIVER.session
         end
 
         def create_genre
