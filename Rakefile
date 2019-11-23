@@ -20,11 +20,16 @@ namespace :import do
             file.each_with_index do |row, index|
                 row = row.split("\t")
                 content = content_check(row[1])
-                if row[4] == 0 && index > 0 && row[5].to_i >= 1950
+                if row[4] == '0' && index > 0 && row[5].to_i >= 1950
                     if content == 1
-                        movie = Movie.new(row)
-                    elsif content == 2
-                        tv_content = TVContent.new(row)
+                        movie = ImdbParser::Movie.new(row)
+                        movie.create_genre
+                        movie.create_movie
+                        movie.create_genre_relationship
+                        movie.create_year_relationship
+                    # elsif content == 2
+                    #     tv_content = TVContent.new(row)
+                        puts "Created #{row[2]} as a Movie Node"
                     end
                 end
             end
