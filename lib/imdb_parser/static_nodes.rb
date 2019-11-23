@@ -5,10 +5,8 @@ module ImdbParser
             neo4j_session = driver.session
 
             month = 1
-
             while month <= 12 do
-                query_str = "CREATE (n:Month {value: #{month}});"
-                neo4j_session.query(query_str)
+                neo4j_session.query("CREATE (n:Month {value: #{month}});")
                 month += 1
             end
         end
@@ -18,7 +16,6 @@ module ImdbParser
             neo4j_session = driver.session
 
             day = 1
-
             while day <= 31 do
                 query_str = "CREATE (n:Day {value: #{day}});"
                 neo4j_session.query(query_str)

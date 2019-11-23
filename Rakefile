@@ -30,4 +30,8 @@ namespace :import do
             end
         end
     end
+
+    task :create_indices => environment do 
+        create_indices
+    end
 end

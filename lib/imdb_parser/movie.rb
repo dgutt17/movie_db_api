@@ -17,7 +17,8 @@ module ImdbParser
 
         def create_movie
             @genres.each do |genre|
-                @session.query("MERGE (n:Movie {imdb_id: #{@imdb_id}, title: #{@title}, runtime: #{@runtime}) -[]-> (m: Genre {name: #{genre}})")
+                @session.query("MATCH (m:Genre {name: #{@genre}}, CREATE (n:Movie {imdb_id: #{@imdb_id}, title: #{@title}, runtime: #{@runtime}) -[r:CATEGORIZED_AS]-> (m)")
+                @session.query("MATCH (n:Movie {imdb_id: #{@imdb_id}}) (m:Year {value: #{release_year}}), CREATE (n)-[:RELEASED_IN]->(m)")
             end
         end
 
