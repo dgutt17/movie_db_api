@@ -4,7 +4,7 @@ module ImdbParser
 
         def initialize(movie)
             @imdb_id = movie.first
-            @title = movie[2]
+            @title = movie[2].gsub(/'/, '|')
             @release_year = movie[5]
             @run_time = movie[7]
             @genres = movie.last.split(",").select {|genre| self.str_validate(genre)}
@@ -15,7 +15,7 @@ module ImdbParser
         end
 
         def create_movie
-            $neo4j_session.query("CREATE (n:Movie {imdb_id: '#{@imdb_id}', title: '#{@title}', runtime: '#{@run_time}'})")
+            $neo4j_session.query("MERGE (n:Movie {imdb_id: '#{@imdb_id}', title: '#{@title}', runtime: '#{@run_time.to_i}'})")
         end
 
         def create_genre_relationship
@@ -30,6 +30,11 @@ module ImdbParser
 
         def str_validate(string)
             !string.match(/\A[a-zA-Z0-9]*\z/).nil? || string == "Sci-Fi"
+        end
+
+        def sanitize_run_time(run_time)
+            run_time.to_i
+
         end
     end
 end
