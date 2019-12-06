@@ -23,10 +23,7 @@ namespace :import do
                 if row[4] == '0' && index > 0 && row[5].to_i >= 1950
                     if content == 1
                         movie = ImdbParser::Movie.new(row)
-                        movie.create_genre
-                        movie.create_movie
-                        movie.create_genre_relationship
-                        movie.create_year_relationship
+                        movie.save!
                     # elsif content == 2
                     #     tv_content = TVContent.new(row)
                         puts "Created #{row[2]} as a Movie Node"

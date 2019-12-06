@@ -8,6 +8,7 @@ module ImdbParser
             @release_year = movie[5]
             @run_time = movie[7]
             @genres = movie.last.split(",").select {|genre| self.str_validate(genre)}
+            @query_string = create_genre + create_movie + create_genre_relationship + create_year_relationship
         end
 
         def create_genre
@@ -15,17 +16,20 @@ module ImdbParser
         end
 
         def create_movie
-            $neo4j_session.query("MERGE (n:Movie {imdb_id: '#{@imdb_id}', title: '#{@title}', runtime: '#{@run_time.to_i}'})")
+            "CREATE (n:Movie {imdb_id: '#{@imdb_id}', title: '#{@title}', runtime: '#{@run_time.to_i}'});"
         end
 
         def create_genre_relationship
+            query_str = String.new
             @genres.each do |genre|
-                $neo4j_session.query("MATCH (n:Movie {imdb_id: '#{@imdb_id}'}), (m:Genre {name: '#{genre}'}) CREATE (n)-[:CATEGORIZED_AS]->(m)")
+                query_str += "MATCH (n:Movie {imdb_id: '#{@imdb_id}'}), (m:Genre {name: '#{genre}'}) CREATE (n)-[:CATEGORIZED_AS]->(m);"
             end
+
+            query_str
         end
 
         def create_year_relationship
-            $neo4j_session.query("MATCH (n:Movie {imdb_id: '#{@imdb_id}'}), (m:Year {name: '#{@release_year}'}) CREATE (n)-[:RELEASE_YEAR]->(m)")
+            "MATCH (n:Movie {imdb_id: '#{@imdb_id}'}), (m:Year {name: '#{@release_year}'}) CREATE (n)-[:RELEASE_YEAR]->(m)"
         end
 
         def str_validate(string)
@@ -34,7 +38,10 @@ module ImdbParser
 
         def sanitize_run_time(run_time)
             run_time.to_i
+        end
 
+        def save!
+            $neo4j_session.query(@query_string)
         end
     end
 end
