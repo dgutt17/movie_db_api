@@ -17,19 +17,25 @@ namespace :import do
 
     task :create_movie_and_genre_nodes => :environment do
         File.open('/Users/dangutt/Desktop/imdb_data/title.basics.tsv') do |file|
+            query_str = String.new
             file.each_with_index do |row, index|
                 row = row.split("\t")
                 content = content_check(row[1])
                 if row[4] == '0' && index > 0 && row[5].to_i >= 1950
                     if content == 1
                         movie = ImdbParser::Movie.new(row)
-                        movie.save!
                     # elsif content == 2
                     #     tv_content = TVContent.new(row)
+                        query_str += movie.query_string
                         puts "Created #{row[2]} as a Movie Node"
                     end
                 end
+                puts "index: #{index}"
+                break if index >= 300000
             end
+            query_str += ';'
+            puts "query_str: #{query_str}"
+            $neo4j_session.query(query_str)
         end
     end
 
