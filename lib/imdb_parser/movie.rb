@@ -40,8 +40,8 @@ module ImdbParser
             run_time.to_i
         end
 
-        # def save!
-        #     $neo4j_session.query(@query_string)
-        # end
+        def save!
+            $neo4j_session.query(@query_string)
+        end
     end
 end
