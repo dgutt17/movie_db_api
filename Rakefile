@@ -15,7 +15,7 @@ namespace :import do
         create_year_nodes
     end
 
-    task :create_movie_and_genre_nodes => :environment do
+    task :create_movie_nodes => :environment do
         File.open('/Users/dangutt/Desktop/imdb_data/title.basics.tsv') do |file|
             query_str = String.new
             file.each_with_index do |row, index|
@@ -36,5 +36,22 @@ namespace :import do
 
     task :create_indices => :environment do 
         create_indices
+    end
+
+    task :create_genre_nodes => :environment do 
+        File.open('/Users/dangutt/Desktop/imdb_data/title.basics.tsv') do |file|
+            final_list = []
+            file.each_with_index do |row, index|
+                row = row.split("\t")
+                genres = row.last.split(',')
+                genres.each do |genre|
+                    new_genre = genre.gsub(/[^0-9a-z ]/i, '').to_sym
+                    if !final_list.include?(new_genre)
+                        final_list << new_genre
+                    end
+                end
+            end
+            ImdbParser::Genre.match_or_create(final_list)
+        end
     end
 end
