@@ -1,12 +1,16 @@
 module ImdbParser
     class Genre
-        def self.match_or_create(genres)
+        def self.create(genres)
             query_string = String.new
-            genres.each do |genre|
-                query_string += "(:Genre {name: '#{genre}'}),"
+            genres.each_with_index do |genre, index|
+                if index != genres.length - 1
+                    query_string += "(:Genre {name: '#{genre}'}),"
+                else
+                    query_string += "(:Genre {name: '#{genre}'})"
+                end
             end
 
-            query_string = 'MERGE ' + query_string + ';'
+            query_string = 'CREATE ' + query_string + ';'
             $neo4j_session.query(query_string)
         end
     end

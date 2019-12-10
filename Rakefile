@@ -45,13 +45,16 @@ namespace :import do
                 row = row.split("\t")
                 genres = row.last.split(',')
                 genres.each do |genre|
-                    new_genre = genre.gsub(/[^0-9a-z ]/i, '').to_sym
+                    new_genre = genre.gsub(/[^0-9a-z ]/i, '')
                     if !final_list.include?(new_genre)
                         final_list << new_genre
                     end
                 end
+                puts "final_list.length: #{final_list.length}"
+                break if final_list.length == 30
             end
-            ImdbParser::Genre.match_or_create(final_list)
+            puts final_list.inspect
+            ImdbParser::Genre.create(final_list)
         end
     end
 end
