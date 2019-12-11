@@ -17,19 +17,34 @@ namespace :import do
 
     task :create_movie_nodes => :environment do
         File.open('/Users/dangutt/Desktop/imdb_data/title.basics.tsv') do |file|
-            query_str = String.new
+            final_arr = []
+            count = 0
             file.each_with_index do |row, index|
                 row = row.split("\t")
                 content = content_check(row[1])
                 if row[4] == '0' && index > 0 && row[5].to_i >= 1950
                     if content == 1
-                        movie = ImdbParser::Movie.new(row)
-                        movie.save!
+                        count += 1
+                        final_arr << ImdbParser::Movie.new(row).create
                     # elsif content == 2
                     #     tv_content = TVContent.new(row)
                         puts "Created #{row[2]} as a Movie Node"
                     end
                 end
+                if count == 50000
+                    count = 0
+                    query_str = "UNWIND {list} as row CREATE (n:Movie) SET n+= row"
+                    puts "unwinding.............................................."
+                    $neo4j_session.query(query_str, list: final_arr)
+                    final_arr = []
+                    puts "done..................................................."
+                end
+            end
+            if final_arr.length > 0 
+                query_str = "UNWIND {list} as row CREATE (n:Movie) SET n+= row"
+                puts "unwinding.............................................."
+                $neo4j_session.query(query_str, list: final_arr)
+                puts "done..................................................."
             end
         end
     end
