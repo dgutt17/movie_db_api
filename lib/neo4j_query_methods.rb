@@ -1,17 +1,15 @@
 module Neo4jQueryMethods
-    def batch_create_nodes
-        "UNWIND {list} as row CREATE (n:row.label {row.body}) SET n+= row"
-    end
+    module Movies
+        def batch_create_movies(label)
+            "UNWIND {list} as row CREATE (n:Movie) SET n+= row"
+        end
 
-    def batch_create_relationships
-        "UNWIND {list} as row MATCH (from:row.from.label {row.from.attr:row.from.id}) MATCH (to:row.to.label {row.to.attr: row.to.id}) CREATE (from)-[rel:row.rel_label]->(to) SET rel += row"
-    end
+        def batch_create_genre_relationships
+            "UNWIND {list} as row MATCH (from:Movie {imdb_id: row.from}) MATCH (to:Genre {name: row.to}) CREATE (from)-[rel:CATEGORIZED_AS]->(to) SET rel += row"
+        end
 
-    def batch_merge_nodes
-        "UNWIND {list} as row MERGE (n:{node_label}) SET n+= row"
-    end
-
-    def batch_merge_relationships(attribute_one:, attribute_two:)
-        "UNWIND {list} as row MATCH (from:{node_one_label}} {#{attribute_one}: row.from}) MATCH (to:{node_two_label} {#{attribute_two}: row.to}) MERGE (from)-[rel:{rel_label}]->(to) SET rel += row"
+        def batch_create_year_relationships
+            "UNWIND {list} as row MATCH (from:Movie {imdb_id: row.from}) MATCH (to:Year {value: row.to}) CREATE (from)-[rel:RELEASED]->(to) SET rel += row"
+        end
     end
 end

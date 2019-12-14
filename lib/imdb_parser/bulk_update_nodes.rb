@@ -1,13 +1,16 @@
+require 'neo4j_query_methods'
+
 module ImdbImporter
     class BulkUpdateNodes
-        include Neo4jQueryMethods
+        include Neo4jQueryMethods::Movies
 
-        attr_accessor :file_path, :nodes, :content, :method
+        attr_accessor :file_path, :nodes, :content, :method, :rel_genres, :rel_years
 
         def initialize(file_path:, content:)
             @file_path = file_path
             @nodes = []
-            @relationships = []
+            @rel_genres = []
+            @rel_years = []
             @count = 0
             @method = content_to_be_created(content)
         end
@@ -16,8 +19,9 @@ module ImdbImporter
             start_time = Time.now
             File.open(@file_path) do |file|
                 file.each_with_index do |row, index|
-                    self.send(@method, parse_row(row))
+                    self.send(@method, parse_row(row), index)
                 end
+                unwind(true)
             end
             puts "Time to finish: #{Time.now - start_time}"
         end
@@ -33,11 +37,11 @@ module ImdbImporter
             end
         end
 
-        def create_show(row)
+        def create_show(row, index)
             if row[4] == '0' && index > 0 && row[5].to_i >= 1950
                 show_content = show_content_type(row[1])
                 if show_content == 1
-                    create_movie
+                    create_movie(row)
                 elsif show_content == 2
                     # tv_content = TVContent.new(row)
                 end
@@ -61,25 +65,31 @@ module ImdbImporter
             end
         end
 
-        def create_movie
+        def create_movie(row)
             @count += 1
             movie = ImdbImporter::Movie.new(row)
             @nodes << movie.node
-            @relationships << movie.genres
-            @relationships << movie.release_year
+            @rel_genres << movie.genres
+            @rel_years << movie.release_year
             puts "Created #{row[2]} as a Movie Node"
         end
 
-        def unwind
-            if count == 50000
-                @count = 0
-                puts "unwinding.............................................."
-                $neo4j_session.query(batch_create_nodes, list: @nodes)
-                $neo4j_session.query(batch_create_relationships, list: @relationships.flatten)
-                @nodes = []
-                @relationships = []
-                puts "done..................................................."
+        def unwind(final_unwind = false)
+            if !final_unwind && @count == 50000
+                execute_unwind
+            elsif final_unwind && @count > 0
+                execute_unwind
             end
+        end
+
+        def execute_unwind
+            @count = 0
+            puts "unwinding.............................................."
+            $neo4j_session.query(batch_create_nodes, list: @nodes)
+            $neo4j_session.query(batch_create_relationships, list: @relationships.flatten)
+            @nodes = []
+            @relationships = []
+            puts "done..................................................."
         end
 
     end
