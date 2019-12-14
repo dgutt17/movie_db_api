@@ -1,4 +1,4 @@
-module ImdbParser
+module ImdbImporter
     class Genre
         def self.create(genres)
             query_string = String.new

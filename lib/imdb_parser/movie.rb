@@ -1,5 +1,6 @@
-module ImdbParser
+module ImdbImporter
     class Movie
+        include Neo4jQueryMethods
         attr_accessor :release_year, :genres, :node
 
         def initialize(movie)
@@ -9,6 +10,10 @@ module ImdbParser
             # @run_time = movie[7]
             @genres = movie.last.split(",").map {|genre| genre.gsub(/[^0-9a-z ]/i, '')}
             @node = {imdb_id: movie.first, title: movie[2].gsub(/'/, '|'), runtime: movie[7].to_i}
+        end
+
+        def save!
+            $neo4j_session.query(batch_create_nodes, list: )
         end
 
         def create_genre_relationship
@@ -30,10 +35,6 @@ module ImdbParser
 
         # def sanitize_run_time(run_time)
         #     run_time.to_i
-        # end
-
-        # def save!
-        #     $neo4j_session.query(@query_string)
         # end
     end
 end

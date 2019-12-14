@@ -1,4 +1,4 @@
-module ImdbParser
+module ImdbImporter
     def content_check(type)
         if type == 'movie'
             return 1

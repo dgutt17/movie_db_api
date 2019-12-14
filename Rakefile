@@ -2,8 +2,8 @@
 # for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
 
 require_relative 'config/application'
-extend ImdbParser::StaticNodes
-extend ImdbParser
+extend ImdbImporter::StaticNodes
+extend ImdbImporter
 
 Rails.application.load_tasks
 
@@ -22,10 +22,8 @@ namespace :import do
             movie_to_genre_rel = []
             movie_to_year_rel = []
             count = 0
-            create_node_str = "UNWIND {list} as row CREATE (n:Movie) SET n+= row"
-            create_rel_str = "UNWIND {list} as row MATCH (from:Movie {imdb_id: row.from}) MATCH (to:Genre {name: row.to}) CREATE (from)-[rel:CATEGORIZED_AS]->(to) SET rel += row"
-            create_rel_str_2 = "UNWIND {list} as row MATCH (from:Movie {imdb_id: row.from}) MATCH (to:Year {value: row.to}) CREATE (from)-[rel:RELEASED]->(to) SET rel += row"
-            logout_row = "UNWIND {list} as row return row"
+            create_node_str = "UNWIND {list} as row CREATE (n:{node_label}) SET n+= row"
+            create_rel_str = "UNWIND {list} as row MATCH (from:{node_one_label}} {imdb_id: row.from}) MATCH (to:{node_two_label} {name: row.to}) CREATE (from)-[rel:{rel_label}]->(to) SET rel += row"
 
             file.each_with_index do |row, index|
                 row = row.split("\t")
@@ -33,7 +31,7 @@ namespace :import do
                 if row[4] == '0' && index > 0 && row[5].to_i >= 1950
                     if content == 1
                         count += 1
-                        movie = ImdbParser::Movie.new(row)
+                        movie = ImdbImporter::Movie.new(row)
                         movie_nodes << movie.node
                         movie_to_genre_rel << movie.create_genre_relationship
                         movie_to_year_rel << movie.create_year_relationship
@@ -85,7 +83,7 @@ namespace :import do
                 break if final_list.length == 30
             end
             puts final_list.inspect
-            ImdbParser::Genre.create(final_list)
+            ImdbImporter::Genre.create(final_list)
         end
     end
 end

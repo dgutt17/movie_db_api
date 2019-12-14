@@ -1,4 +1,4 @@
-module ImdbParser
+module ImdbImporter
     module StaticNodes
         def create_month_nodes
             month = 1
