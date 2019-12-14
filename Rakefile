@@ -86,4 +86,8 @@ namespace :import do
             ImdbImporter::Genre.create(final_list)
         end
     end
+
+    task :create_movie_nodes_two => :environment do
+        ImdbImporter::BulkUpdateNodes.new(file_path: '/Users/dangutt/Desktop/imdb_data/title.basics.tsv', content: :show).run
+    end
 end
