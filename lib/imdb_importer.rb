@@ -1,4 +1,25 @@
-module ImdbImporter
+class ImdbImporter
+
+    def self.batch_update
+        phase_one
+        phase_two
+        phase_three
+    end
+
+    def self.phase_one
+        Index.create
+        Year.create
+        Month.create
+        Day.create
+    end
+
+    def self.phase_two
+        puts "Phase Two................................."
+    end
+
+    def phase_three
+        puts "Phase Three................................."
+    end
     # def content_check(type)
     #     if type == 'movie'
     #         return 1

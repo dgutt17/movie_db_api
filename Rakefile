@@ -2,8 +2,8 @@
 # for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
 
 require_relative 'config/application'
-extend ImdbImporter::StaticNodes
-extend ImdbImporter
+# extend ImdbImporter::StaticNodes
+# extend ImdbImporter
 
 Rails.application.load_tasks
 
@@ -87,7 +87,7 @@ namespace :import do
         end
     end
 
-    task :create_movie_nodes_two => :environment do
-        ImdbImporter::BulkUpdateNodes.new(file_path: '/Users/dangutt/Desktop/imdb_data/title.basics.tsv', content: :show).run
+    task :bulk_update => :environment do
+        ImdbImporter.bulk_update
     end
 end
