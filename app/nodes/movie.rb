@@ -1,5 +1,5 @@
 class Movie < Node
-    # include Neo4jQueryMethods::Movies
+    include Neo4jQueryMethods
     attr_accessor :release_year, :genres, :node
 
     def initialize(movie)
