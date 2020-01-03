@@ -88,6 +88,6 @@ namespace :import do
     end
 
     task :bulk_update => :environment do
-        ImdbImporter.bulk_update
+        ImdbImporter.new.bulk_update
     end
 end
