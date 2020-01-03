@@ -3,8 +3,7 @@ class ImdbScore < Node
         score = 0
 
         while score <= 10 do
-            query_str = "CREATE (n:Imdb_Score {value: #{score}});"
-            $neo4j_session.query(query_str)
+            $neo4j_session.query("CREATE (n:Imdb_Score {value: #{score}});")
             score += 1
         end
     end

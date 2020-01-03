@@ -1,6 +1,10 @@
 class Index
-    QUERY_STRING = 'CREATE INDEX ON :Month(value), :Day(value), :Imdb_Score(value), :Year(value), :Genre(name), :Movie(imdb_id)'.freeze
     def self.create
-        $neo4j_session.query(QUERY_STRING)
+        $neo4j_session.query('CREATE INDEX ON :Day(value)')
+        $neo4j_session.query('CREATE INDEX ON :Month(value)')
+        $neo4j_session.query('CREATE INDEX ON :Year(value)')
+        $neo4j_session.query('CREATE INDEX ON :Imdb_Score(value)')
+        $neo4j_session.query('CREATE INDEX ON :Genre(name)')
+        $neo4j_session.query('CREATE INDEX ON :Movie(imdb_id)')
     end
 end

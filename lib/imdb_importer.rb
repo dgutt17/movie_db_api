@@ -1,6 +1,6 @@
 class ImdbImporter
 
-    def self.batch_update
+    def self.bulk_update
         phase_one
         phase_two
         phase_three
@@ -11,13 +11,14 @@ class ImdbImporter
         Year.create
         Month.create
         Day.create
+        ImdbScore.create
     end
 
     def self.phase_two
         puts "Phase Two................................."
     end
 
-    def phase_three
+    def self.phase_three
         puts "Phase Three................................."
     end
     # def content_check(type)

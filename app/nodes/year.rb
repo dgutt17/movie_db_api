@@ -3,8 +3,7 @@ class Year < Node
         year = 1900
 
         while year <= 2020 do
-            query_str = "CREATE (n:Year {value: #{year}});"
-            $neo4j_session.query(query_str)
+            $neo4j_session.query("CREATE (n:Year {value: #{year}});")
             year += 1
         end
     end
