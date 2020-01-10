@@ -1,6 +1,6 @@
 class Movie < Node
     def initialize(movie)
-        {imdb_id: movie.first, title: parse_title(movie[2]), runtime: parse_runtime(movie)}
+        {imdb_id: movie.first, title: parse_title(movie), runtime: parse_runtime(movie)}
     end
 
     private

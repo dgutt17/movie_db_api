@@ -90,4 +90,8 @@ namespace :import do
     task :bulk_update => :environment do
         ImdbImporter.new.bulk_update
     end
+
+    task :test => :environment do
+        puts "Hello World"
+    end
 end

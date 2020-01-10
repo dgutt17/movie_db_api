@@ -4,7 +4,7 @@ class TitleBasicsImporter
 
     attr_accessor :file, :movies, :categorized_as_rels, :released_rels, :count
 
-    def intialize
+    def initialize
         @file = ENV["TITLE_BASICS_PATH"] 
         @movies = Array.new
         @categorized_as_rels = Array.new
@@ -27,7 +27,7 @@ class TitleBasicsImporter
         MOVIE = 'Movie'.freeze
         CATEGORIZED_AS = 'CATEGORIZED_AS'.freeze
         RELEASED = 'RELEASED'.freeze
-        GENRE = 'Genre'.freeeze
+        GENRE = 'Genre'.freeze
         YEAR = 'Year'.freeze
     end
 
@@ -37,7 +37,7 @@ class TitleBasicsImporter
         file.each_with_index do |row, index|
             next if index == 0
             parse_content(row)
-            import if count == 50000
+            import if @count == 50000
         end
     end
 
@@ -57,7 +57,7 @@ class TitleBasicsImporter
 
      def parse_content(row)
         row = parse_row(row)
-        add_data(row) if can_add_content?(row)
+        add_data(row) if can_add_data?(row)
      end
 
      def can_add_data?(row)
@@ -73,13 +73,13 @@ class TitleBasicsImporter
      end
 
      def add_data(row)
-        add_content(row)
+        add_content(row, content_check(row[1]))
         add_categorized_as(row)
         add_released(row)
-        count += 1
+        @count += 1
      end
 
-     def add_content(row)
+     def add_content(row, content)
         if content == :movie
             add_movie(row)
         elsif content == :tv_show
@@ -106,7 +106,7 @@ class TitleBasicsImporter
      end
 
      def import
-        count = 0
+        @count = 0
         puts "unwinding.............................................."
         import_movies
         import_categorized_as_rels

@@ -1,6 +1,6 @@
 class ImdbImporter
 
-    def initialize(args)
+    def initialize
         # args.each do |importer|
         #     importer.new.run
         # end
