@@ -5,7 +5,7 @@ class TitleBasicsImporter
     attr_accessor :file, :movies, :categorized_as_rels, :released_rels, :count
 
     def initialize
-        @file = ENV["TITLE_BASICS_PATH"] 
+        @file = ENV['TITLE_BASICS_PATH'] 
         @movies = Array.new
         @categorized_as_rels = Array.new
         @released_rels = Array.new
@@ -16,10 +16,9 @@ class TitleBasicsImporter
         start_time = Time.now
         File.open(file) do |file|
             parse_title_basics(file)
-
-            # Importing the remaining movies and relationships.
-            import if movies.length > 0
         end
+        # Importing the remaining movies and relationships.
+        import if @movies.length > 0
         puts "Time to finish: #{Time.now - start_time}"
     end
 
@@ -89,7 +88,7 @@ class TitleBasicsImporter
     
     def add_movie(row)
         movies << Movie.new(row).node
-        puts "Created #{row[2]} as a Movie Node"
+        puts "Created #{row[0]} as a Movie Node"
     end
     
     def add_categorized_as(row)
@@ -102,7 +101,7 @@ class TitleBasicsImporter
 
      def add_tv_show(row)
         # tv_content = TVContent.new(row)
-        puts "Created #{row[2]} as a TV show Node"
+        puts "Created #{row[0]} as a TV show Node"
      end
 
      def import
@@ -111,22 +110,22 @@ class TitleBasicsImporter
         import_movies
         import_categorized_as_rels
         import_released_rels
-        movies = []
-        categorized_as_rels = []
-        released_rels = []
+        @movies = []
+        @categorized_as_rels = []
+        @released_rels = []
         puts "done..................................................."
      end
 
      def import_movies
-        $neo4j_session.query(batch_create_nodes('Movie'), list: movies)
+        $neo4j_session.query(batch_create_nodes('Movie'), list: @movies)
      end
 
      def import_categorized_as_rels
-        $neo4j_session.query(categorized_as_query, list: categorized_as_rels.flatten)
+        $neo4j_session.query(categorized_as_query, list: @categorized_as_rels.flatten)
      end
 
      def import_released_rels
-        $neo4j_session.query(released_query, list: released_rels)
+        $neo4j_session.query(released_query, list: @released_rels)
      end
 
      def categorized_as_query
