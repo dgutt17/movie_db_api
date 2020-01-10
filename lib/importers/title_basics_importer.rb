@@ -26,7 +26,7 @@ class TitleBasicsImporter
     module Labels
         MOVIE = 'Movie'.freeze
         CATEGORIZED_AS = 'CATEGORIZED_AS'.freeze
-        RELEASED = 'RELEASED'.freeze
+        A = 'RELEASED'.freeze
         GENRE = 'Genre'.freeze
         YEAR = 'Year'.freeze
     end
@@ -88,16 +88,16 @@ class TitleBasicsImporter
     end
     
     def add_movie(row)
-        movies << Movie.new(row)
+        movies << Movie.new(row).node
         puts "Created #{row[2]} as a Movie Node"
     end
     
     def add_categorized_as(row)
-        categorized_as_rels << CategorizedAs.new(row)
+        categorized_as_rels << CategorizedAs.new(row).node
     end
     
     def add_released(row)
-        released_rels << Released.new(row)
+        released_rels << Released.new(row).node
     end
 
      def add_tv_show(row)
@@ -153,7 +153,7 @@ class TitleBasicsImporter
             node_label_two: Labels::YEAR, 
             match_obj_one: '{imdb_id: row.from}', 
             match_obj_two: '{value: row.to}', 
-            rel_label: Labels::RElEASED
+            rel_label: Labels::A
         }
      end
 

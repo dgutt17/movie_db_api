@@ -1,6 +1,8 @@
 class Movie < Node
+    attr_accessor :node
+
     def initialize(movie)
-        {imdb_id: movie.first, title: parse_title(movie), runtime: parse_runtime(movie)}
+        @node = {imdb_id: movie.first, title: parse_title(movie), runtime: parse_runtime(movie)}
     end
 
     private

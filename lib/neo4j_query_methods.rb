@@ -10,7 +10,7 @@ module Neo4jQueryMethods
         create_relationship = "CREATE (from)-[rel:#{parse_rel_label(args[:rel_label])}]->(to)"
         increment = 'SET rel += row'
 
-        unwind + match_node_one + match_node_two + create_relationship + increment
+        unwind + ' ' + match_node_one + ' ' + match_node_two + ' ' + ' '+ create_relationship + increment
     end
     # def batch_create_genre_relationships
     #     "UNWIND {list} as row MATCH (from:Movie {imdb_id: row.from}) MATCH (to:Genre {name: row.to}) CREATE (from)-[rel:CATEGORIZED_AS]->(to) SET rel += row"
