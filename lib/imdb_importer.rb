@@ -1,9 +1,9 @@
 class ImdbImporter
 
     def initialize(args)
-        args.each do |importer|
-            importer.new.run
-        end
+        # args.each do |importer|
+        #     importer.new.run
+        # end
     end
 
     def bulk_update
@@ -25,7 +25,7 @@ class ImdbImporter
     def phase_two
         puts "Phase Two................................."
         Genre.create
-        first_unwind
+        TitleBasicsImporter.new.run
     end
 
     def phase_three
@@ -40,11 +40,4 @@ class ImdbImporter
     #     $neo4j_session.query('CREATE INDEX ON :Genre(name)')
     #     $neo4j_session.query('CREATE INDEX ON :Movie(imdb_id)')
     # end
-
-    def first_unwind
-        start_time = Time.now
-        File.open('/Users/dangutt/Desktop/imdb_data/title.basics.tsv') do |file|
-        end
-        puts "Time to finish: #{Time.now - start_time}"
-    end
 end

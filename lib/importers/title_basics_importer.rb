@@ -1,3 +1,4 @@
+require 'neo4j_query_methods'
 class TitleBasicsImporter
     include Neo4jQueryMethods
 
@@ -15,9 +16,19 @@ class TitleBasicsImporter
         start_time = Time.now
         File.open(file) do |file|
             parse_title_basics(file)
-            import if count == 50000
+
+            # Importing the remaining movies and relationships.
+            import if movies.length > 0
         end
         puts "Time to finish: #{Time.now - start_time}"
+    end
+
+    module Labels
+        MOVIE = 'Movie'.freeze
+        CATEGORIZED_AS = 'CATEGORIZED_AS'.freeze
+        RELEASED = 'RELEASED'.freeze
+        GENRE = 'Genre'.freeeze
+        YEAR = 'Year'.freeze
     end
 
     private
@@ -26,6 +37,7 @@ class TitleBasicsImporter
         file.each_with_index do |row, index|
             next if index == 0
             parse_content(row)
+            import if count == 50000
         end
     end
 
@@ -96,12 +108,12 @@ class TitleBasicsImporter
      def import
         count = 0
         puts "unwinding.............................................."
-        $neo4j_session.query(create_node_str, list: movie_nodes)
-        $neo4j_session.query(create_rel_str, list: movie_to_genre_rel.flatten)
-        $neo4j_session.query(create_rel_str_2, list: movie_to_year_rel)
-        movie_nodes = []
-        movie_to_genre_rel = []
-        movie_to_year_rel = []
+        import_movies
+        import_categorized_as_rels
+        import_released_rels
+        movies = []
+        categorized_as_rels = []
+        released_rels = []
         puts "done..................................................."
      end
 
@@ -109,5 +121,40 @@ class TitleBasicsImporter
         $neo4j_session.query(batch_create_nodes('Movie'), list: movies)
      end
 
+     def import_categorized_as_rels
+        $neo4j_session.query(categorized_as_query, list: categorized_as_rels.flatten)
+     end
+
+     def import_released_rels
+        $neo4j_session.query(released_query, list: released_rels)
+     end
+
+     def categorized_as_query
+        batch_create_relationships(categorized_as_hash)
+     end
+
+     def categorized_as_hash
+        {
+            node_label_one: Labels::MOVIE, 
+            node_label_two: Labels::GENRE, 
+            match_obj_one: '{imdb_id: row.from}', 
+            match_obj_two: '{name: row.to}', 
+            rel_label: Labels::CATEGORIZED_AS
+        }
+     end
+
+     def released_query
+        batch_create_relationships(released_hash)
+     end
+
+     def released_hash
+        {
+            node_label_one: Labels::MOVIE, 
+            node_label_two: Labels::YEAR, 
+            match_obj_one: '{imdb_id: row.from}', 
+            match_obj_two: '{value: row.to}', 
+            rel_label: Labels::RElEASED
+        }
+     end
 
 end
