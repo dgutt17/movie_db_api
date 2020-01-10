@@ -2,10 +2,10 @@ require 'neo4j_query_methods'
 class TitleBasicsImporter
     include Neo4jQueryMethods
 
-    attr_accessor :file, :movies, :categorized_as_rels, :released_rels, :count
+    attr_accessor :file_path, :movies, :categorized_as_rels, :released_rels, :count
 
     def initialize
-        @file = ENV['TITLE_BASICS_PATH'] 
+        @file_path = ENV['TITLE_BASICS_PATH'] 
         @movies = Array.new
         @categorized_as_rels = Array.new
         @released_rels = Array.new
@@ -14,7 +14,7 @@ class TitleBasicsImporter
 
     def run
         start_time = Time.now
-        File.open(file) do |file|
+        File.open(file_path) do |file|
             parse_title_basics(file)
         end
         # Importing the remaining movies and relationships.
