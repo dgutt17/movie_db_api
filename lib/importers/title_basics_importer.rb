@@ -1,14 +1,15 @@
-require 'neo4j_query_methods'
+require 'query_methods'
 class TitleBasicsImporter
     include Neo4j::QueryMethods
 
-    attr_accessor :file_path, :movies, :categorized_as_rels, :released_rels, :count
+    attr_accessor :file_path, :movies, :categorized_as_rels, :released_rels, :count, :headers, :tv_shows
 
     def initialize
         @file_path = ENV['TITLE_BASICS_PATH'] 
-        @movies = Array.new
-        @categorized_as_rels = Array.new
-        @released_rels = Array.new
+        @movies = []
+        @categorized_as_rels = []
+        @released_rels = []
+        @tv_shows = []
         @count = 0
     end
 
@@ -34,61 +35,56 @@ class TitleBasicsImporter
 
     def parse_title_basics(file)
         file.each_with_index do |row, index|
-            next if index == 0
+            if index == 0
+                headers = row.split("\t").map{|header| header.to_sym}
+                next
+            end
             parse_content(row)
             import if @count == 50000
         end
     end
 
     def parse_row(row)
-        row = row.split("\t")
+        parsed_row = {}
+        headers.each_with_index do |header, index|
+            parsed_row[header] = row[index]
+        end
+
+        parsed_row
     end
-    
-    def content_check(type)
-        if type == 'movie'
-             return :movie
-         elsif type == 'tvSeries' || type == 'tvMiniSeries' || type == 'tvMovie'
-            return :tv_show
-         else
-            return :nothing
-         end
-     end
 
      def parse_content(row)
         row = parse_row(row)
-        add_data(row) if can_add_data?(row)
+        content = Content.new(row)
+        add_data(row, content[:node]) if can_add_data?(row, content[:type])
      end
 
-     def can_add_data?(row)
-        not_adult_content?(row) && not_before_1950?(row)
+     def can_add_data?(row, content_type)
+        not_adult_content?(row) && not_before_1950?(row) && content_type != :nothing
      end
 
      def not_adult_content?(row)
-        row[4] == '0'
+        row[:isAdult] == '0'
      end
 
      def not_before_1950?(row)
-        row[5].to_i >= 1950
+        row[:startYear].to_i >= 1950
      end
 
-     def add_data(row)
-        add_content(row, content_check(row[1]))
+     def add_data(row, node)
+        add_content(node)
         add_categorized_as(row)
         add_released(row)
         @count += 1
      end
 
-     def add_content(row, content)
-        if content == :movie
-            add_movie(row)
-        elsif content == :tv_show
-            add_tv_show(row)
-        end
+     def add_content(node)
+        node[:type] == :movie ? add_movie(node) : add_tv_show(node)
     end
     
-    def add_movie(row)
-        movies << Movie.new(row).node
-        puts "Created #{row[0]} as a Movie Node"
+    def add_movie(movie)
+        movies << movie
+        puts "Created #{content[:tconst]} as a Movie Node"
     end
     
     def add_categorized_as(row)
@@ -99,9 +95,9 @@ class TitleBasicsImporter
         released_rels << Released.new(row).node
     end
 
-     def add_tv_show(row)
-        # tv_content = TVContent.new(row)
-        puts "Created #{row[0]} as a TV show Node"
+     def add_tv_show(tv_show)
+        tv_shows << tv_show
+        puts "Created #{row[:tconst]} as a TV show Node"
      end
 
      def import
@@ -113,10 +109,15 @@ class TitleBasicsImporter
         @movies = []
         @categorized_as_rels = []
         @released_rels = []
+        @tv_shows = []
         puts "done..................................................."
      end
 
      def import_movies
+        $neo4j_session.query(batch_create_nodes('Movie'), list: @movies)
+     end
+
+     def import_tv_shows
         $neo4j_session.query(batch_create_nodes('Movie'), list: @movies)
      end
 

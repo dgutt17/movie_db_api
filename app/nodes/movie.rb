@@ -1,17 +1,18 @@
 class Movie < Node
-    attr_accessor :node
+    attr_accessor :node, :movie
 
     def initialize(movie)
-        @node = {imdb_id: movie.first, title: parse_title(movie), runtime: parse_runtime(movie)}
+        @movie = movie
+        @node = {imdb_id: movie[:tconst], title: parse_title, runtime: parse_runtime}
     end
 
     private
 
-    def parse_title(movie)
-        movie[2].gsub(/'/, '|')
+    def parse_title
+        movie[:primaryTitle].gsub(/'/, '|')
     end
 
-    def parse_runtime(movie)
-        movie[7].to_i
+    def parse_runtime
+        movie[:runtimeMinutes].to_i
     end
 end

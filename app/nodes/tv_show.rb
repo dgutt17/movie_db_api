@@ -1,0 +1,3 @@
+class TvShow < Node
+
+end
