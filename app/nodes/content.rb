@@ -5,25 +5,25 @@ class Content < Node
   def initialize(content)
     @content = content
     @type = parse_type(content[:titleType])
-
-    content_node
   end
   
-  private
   def content_node
     if movie?
       {node: Movie.new(content).node, type: type}
     elsif tv_show?
-      # TvShow.new(content).node
+      {node: TvShow.new(content).node, type: type}
+    else
+      {node: nil, type: type}
     end
   end
 
+  private
   def movie?
     type == :movie
   end
 
   def tv_show?
-    type == :tvSeries || type == :tvMiniSeries || type == :tvMovie
+    type == :tv_show
   end
 
   def parse_type(type)
@@ -35,6 +35,4 @@ class Content < Node
       :nothing
     end
   end
-
-
 end
