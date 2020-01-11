@@ -1,6 +1,6 @@
 require 'neo4j_query_methods'
 class TitleBasicsImporter
-    include Neo4jQueryMethods
+    include Neo4j::QueryMethods
 
     attr_accessor :file_path, :movies, :categorized_as_rels, :released_rels, :count
 
