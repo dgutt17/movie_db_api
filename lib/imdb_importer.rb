@@ -6,7 +6,7 @@ class ImdbImporter
         # end
     end
 
-    def bulk_update
+    def batch_create
         phase_one
         phase_two
         phase_three
