@@ -120,26 +120,29 @@ class TitleBasicsImporter
         puts "unwinding.............................................."
         import_movies
         import_tv_shows
+        empty_arrays
         puts "done..................................................."
+     end
+
+     def empty_arrays
+        @movies = []
+        @categorized_as_rels_movie = []
+        @released_rels_movie = []
+        @tv_shows = []
+        @categorized_as_rels_tv = []
+        @released_rels_tv = []
      end
 
      def import_movies
          import_nodes(:movie)
          import_categorized_as_rels(:movie)
          import_released_rels(:movie)
-         @movies = []
-         @categorized_as_rels_movie = []
-         @released_rels_movie = []
-        $neo4j_session.query(batch_create_nodes('Movie'), list: @movies)
      end
 
      def import_tv_shows
          import_nodes(:tv_show)
          import_categorized_as_rels(:tv_show)
          import_released_rels(:tv_show)
-         @tv_shows = []
-         @categorized_as_rels_tv = []
-         @released_rels_tv = []
      end
 
      def import_nodes(type)
@@ -193,5 +196,4 @@ class TitleBasicsImporter
             rel_label: Labels::A
         }
      end
-
 end
