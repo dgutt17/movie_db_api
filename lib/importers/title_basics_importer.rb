@@ -29,7 +29,7 @@ class TitleBasicsImporter
     module Labels
         MOVIE = 'Movie'.freeze
         CATEGORIZED_AS = 'CATEGORIZED_AS'.freeze
-        A = 'RELEASED'.freeze
+        RELEASED = 'RELEASED'.freeze
         GENRE = 'Genre'.freeze
         YEAR = 'Year'.freeze
         TVSHOW = 'TvShow'.freeze
@@ -193,7 +193,7 @@ class TitleBasicsImporter
             node_label_two: Labels::YEAR, 
             match_obj_one: '{imdb_id: row.from}', 
             match_obj_two: '{value: row.to}', 
-            rel_label: Labels::A
+            rel_label: Labels::RELEASED
         }
      end
 end
