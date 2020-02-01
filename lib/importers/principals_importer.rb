@@ -8,7 +8,8 @@ class PrincipalsImporter
 
   def initialize
     @file_path = ENV['PRINCIPALS_PATH']
-    @principals = []
+    @batch_create_known_for_relationships = batch_create_known_for_relationships
+    @batch_create_principals = batch_create_principals
     @count = 0
   end
 
@@ -23,26 +24,52 @@ class PrincipalsImporter
 
   def principle_parser(file)
     file.each_with_index do |row, index|
-      @headers = create_headers(row) if index == 0
-      row = parse_row(row)
-      @principals << Principal.new(row).node
-      puts "Created principle #{row[:primaryName]}"
-      @count += 1
-      import if @count == 50000
+      if index == 0
+        set_headers(row)
+      elsif @count == 50000
+        # import
+      else
+        row = parse_row(row)
+        collect(row)
+        @count += 1
+      end
     end
 
     import if principals.count > 0
   end
 
+  def set_headers(row)
+    @headers = row.split("\t").map{|header| header.gsub("\n","").to_sym}
+  end
+
+  def parse_row(row)
+    parsed_row = {}
+    row = row.split("\t")
+    @headers.each_with_index do |header, index|
+        parsed_row[header] = row[index]
+    end
+
+    parsed_row
+  end
+
+  def batch_create_known_for_relationships
+    BatchCreate::Relationships::KnownFors.new
+  end
+
+  def batch_create_principals
+    BatchCreate::Nodes::Principals.new
+  end
+
+  def collect(row)
+    @batch_create_known_for_relationships.collect(row)
+    @batch_create_principals.collect(row)
+  end
+
   def import
     @count = 0
     puts "unwinding.............................................."
-    import_principals
-    @principals = []
+    @batch_create_known_for_relationships.import
+    @batch_create_principals.import
     puts "done..................................................."
-  end
-
-  def import_principals
-    $neo4j_session.query(batch_create_nodes('Principal'), list: @principals)
   end
 end
