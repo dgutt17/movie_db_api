@@ -9,7 +9,9 @@ Rails.application.load_tasks
 
 namespace :import do
     task :batch_create => :environment do
+        start_time = Time.now
         ImdbImporter.new.batch_create
+        puts "Time to finish: #{Time.now - start_time}"
     end
 
     task :test => :environment do

@@ -17,13 +17,11 @@ class TitleBasicsImporter
     end
 
     def run
-        start_time = Time.now
         File.open(file_path) do |file|
             parse_title_basics(file)
         end
         # Importing the remaining movies and relationships.
         import if @movies.length > 0
-        puts "Time to finish: #{Time.now - start_time}"
     end
 
     module Labels
@@ -52,8 +50,8 @@ class TitleBasicsImporter
         end
     end
 
-    def parse_row(row)
-        parsed_row = {}
+   def parse_row(row)
+      parsed_row = {}
         row = row.split("\t")
         headers.each_with_index do |header, index|
             parsed_row[header] = row[index]

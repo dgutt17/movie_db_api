@@ -31,5 +31,6 @@ class ImdbImporter
 
     def phase_three
         puts "Phase Three................................."
+        PrincipalsImporter.new.run
     end
 end
