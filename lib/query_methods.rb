@@ -1,7 +1,7 @@
 module Neo4j
     module QueryMethods
         def batch_create_nodes(label)
-            "UNWIND {list} as row CREATE (n:#{parse_node_label(label)}) SET n+= row"
+            "UNWIND {list} as row CREATE (n:#{parse_node_label(label)}) SET n+= row return n"
         end
 
         def batch_create_relationships(args)

@@ -1,20 +1,26 @@
+require 'query_methods'
+
 module BatchCreate
   module Relationships
     class KnownFors
       include Neo4j::QueryMethods
 
-      attr_reader :relationships
+      attr_reader :relationships, :content_hash
     
-      def initalize
+      def initialize(content_hash)
+        @content_hash = content_hash
         @relationships = []
       end
     
       def collect(args)
-        relationships << KnownFor.new(args).relationships
+        KnownFor.new(args).relationships.each do |relationship|
+          relationships << relationship if content_hash[relationship[:to].to_sym]
+        end
+        puts "Created known for relationship for: #{args[:nconst]}"
       end
 
       def import
-        $neo4j_session.query(batch_create_relationships(cypher_hash), list: relationships.flatten!)
+        $neo4j_session.query(batch_create_relationships(cypher_hash), list: relationships)
         @relationships = []
       end
 

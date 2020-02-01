@@ -1,8 +1,8 @@
 class KnownFor < Relationship
 
-  attr_reader :relationships
+  attr_reader :relationships, :args
 
-  def initalize(args)
+  def initialize(args)
     @args = args
     @relationships = set_relationships
   end

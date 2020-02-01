@@ -1,13 +1,12 @@
-require 'query_methods'
 require 'importer_parsing_methods'
 class PrincipalsImporter
-  include Neo4j::QueryMethods
   include ImporterParsingMethods
 
   attr_accessor :principals, :headers, :count, :file_path
 
-  def initialize
+  def initialize(content_hash)
     @file_path = ENV['PRINCIPALS_PATH']
+    @content_hash = content_hash
     @batch_create_known_for_relationships = batch_create_known_for_relationships
     @batch_create_principals = batch_create_principals
     @count = 0
@@ -25,9 +24,9 @@ class PrincipalsImporter
   def principle_parser(file)
     file.each_with_index do |row, index|
       if index == 0
-        set_headers(row)
+        @headers = create_headers(row)
       elsif @count == 50000
-        # import
+        import
       else
         row = parse_row(row)
         collect(row)
@@ -35,25 +34,11 @@ class PrincipalsImporter
       end
     end
 
-    import if principals.count > 0
-  end
-
-  def set_headers(row)
-    @headers = row.split("\t").map{|header| header.gsub("\n","").to_sym}
-  end
-
-  def parse_row(row)
-    parsed_row = {}
-    row = row.split("\t")
-    @headers.each_with_index do |header, index|
-        parsed_row[header] = row[index]
-    end
-
-    parsed_row
+    import if count > 0
   end
 
   def batch_create_known_for_relationships
-    BatchCreate::Relationships::KnownFors.new
+    BatchCreate::Relationships::KnownFors.new(@content_hash)
   end
 
   def batch_create_principals
@@ -61,15 +46,15 @@ class PrincipalsImporter
   end
 
   def collect(row)
-    @batch_create_known_for_relationships.collect(row)
     @batch_create_principals.collect(row)
+    @batch_create_known_for_relationships.collect(row)
   end
 
   def import
     @count = 0
     puts "unwinding.............................................."
-    @batch_create_known_for_relationships.import
     @batch_create_principals.import
+    @batch_create_known_for_relationships.import
     puts "done..................................................."
   end
 end

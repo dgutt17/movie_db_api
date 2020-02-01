@@ -1,3 +1,5 @@
+require 'query_methods'
+
 module BatchCreate
   module Nodes
     class Principals
@@ -11,6 +13,7 @@ module BatchCreate
 
       def collect(args)
         nodes << Principal.new(args).node
+        puts "Created principal: #{args[:nconst]}, #{args[:primaryName]}"
       end
 
       def import

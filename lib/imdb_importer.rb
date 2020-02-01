@@ -26,11 +26,11 @@ class ImdbImporter
     def phase_two
         puts "Phase Two................................."
         Genre.create
-        TitleBasicsImporter.new.run
+        @content_hash = TitleBasicsImporter.new.run
     end
 
     def phase_three
         puts "Phase Three................................."
-        PrincipalsImporter.new.run
+        PrincipalsImporter.new(@content_hash).run
     end
 end

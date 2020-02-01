@@ -1,9 +1,12 @@
 require 'query_methods'
+require 'importer_parsing_methods'
+
 class TitleBasicsImporter
     include Neo4j::QueryMethods
+    include ImporterParsingMethods
 
     attr_accessor :file_path, :movies, :categorized_as_rels_movie, :released_rels_movie, :count, 
-                  :tv_shows, :headers, :categorized_as_rels_tv, :released_rels_tv
+                  :tv_shows, :headers, :categorized_as_rels_tv, :released_rels_tv, :content_hash
 
     def initialize
         @file_path = ENV['TITLE_BASICS_PATH'] 
@@ -14,6 +17,7 @@ class TitleBasicsImporter
         @categorized_as_rels_tv = []
         @released_rels_tv = []
         @count = 0
+        @content_hash = {}
     end
 
     def run
@@ -22,6 +26,8 @@ class TitleBasicsImporter
         end
         # Importing the remaining movies and relationships.
         import if @movies.length > 0
+
+        @content_hash
     end
 
     module Labels
@@ -145,9 +151,11 @@ class TitleBasicsImporter
 
      def import_nodes(type)
       if type == :movie
-         $neo4j_session.query(batch_create_nodes('Movie'), list: @movies)
+          return_obj = $neo4j_session.query(batch_create_nodes('Movie'), list: @movies)
+          parse_cypher_return_node_object(return_obj)
       else
-         $neo4j_session.query(batch_create_nodes('TvShow'), list: @tv_shows)
+        return_obj = $neo4j_session.query(batch_create_nodes('TvShow'), list: @tv_shows)
+         parse_cypher_return_node_object(return_obj)
       end
      end
 
