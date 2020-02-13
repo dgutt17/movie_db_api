@@ -7,5 +7,7 @@ class Index
         $neo4j_session.query('CREATE INDEX ON :Genre(name)')
         $neo4j_session.query('CREATE INDEX ON :Movie(imdb_id)')
         $neo4j_session.query('CREATE INDEX ON :Tv_Show(imdb_id)')
+        $neo4j_session.query('CREATE INDEX ON :Principal(imdb_id)')
+
     end
 end
