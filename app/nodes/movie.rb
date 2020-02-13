@@ -3,7 +3,14 @@ class Movie < Node
 
     def initialize(movie)
         @movie = movie
-        @node = {imdb_id: movie[:tconst], title: parse_title, runtime: parse_runtime}
+        @node = {
+            id: movie[:tconst],
+            properties: {
+                imdb_id: movie[:tconst], 
+                title: parse_title, 
+                runtime: parse_runtime
+            }
+        }
     end
 
     private

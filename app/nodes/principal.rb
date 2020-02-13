@@ -5,11 +5,14 @@ class Principal < Node
   def initialize(args)
     @args = args
     @node = {
-      imdb_id: imdb_id, 
-      first_name: first_name, 
-      last_name: last_name,
-      birth_year: birth_year,
-      death_year: death_year
+      id: imdb_id,
+      properties: {
+        imdb_id: imdb_id, 
+        first_name: first_name, 
+        last_name: last_name,
+        birth_year: birth_year,
+        death_year: death_year
+      }
     }
   end
 

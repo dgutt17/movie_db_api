@@ -2,7 +2,14 @@ class TvShow < Node
   attr_accessor :node, :tv_show
   def initialize(tv_show)
     @tv_show = tv_show
-    @node = {imdb_id: tv_show[:tconst], title: parse_title, runtime: parse_runtime}
+    @node = {
+      id: tv_show[:tconst],
+      properties: {
+        imdb_id: tv_show[:tconst], 
+        title: parse_title, 
+        runtime: parse_runtime
+      }
+    }
   end
 
   private
