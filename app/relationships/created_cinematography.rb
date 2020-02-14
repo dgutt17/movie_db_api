@@ -1,0 +1,2 @@
+class CreatedCinematography < Relationship
+end

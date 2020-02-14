@@ -3,9 +3,9 @@ require 'labels'
 
 module BatchCreate
   module Relationships
-    class KnownFors
+    class ActedIn
       include Neo4j::QueryMethods
-
+      
       attr_reader :relationships, :content_hash
     
       def initialize(content_hash)
@@ -14,10 +14,8 @@ module BatchCreate
       end
     
       def collect(args)
-        KnownFor.new(args).relationships.each do |relationship|
-          relationships << relationship if content_hash[relationship[:to].to_sym]
-        end
-        puts "Created known for relationship for: #{args[:nconst]}"
+        relationships << ActedIn.new(args).relationship if content_hash[relationship[:to].to_sym]
+        puts "Created acted in relationship #{args[:tconst]} -> #{args[:nconst]}"
       end
 
       def import
@@ -31,7 +29,7 @@ module BatchCreate
         {
           match_obj_one: '{imdb_id: row.from}', 
           match_obj_two: '{imdb_id: row.to}', 
-          rel_label: Labels::KNOWNFOR
+          rel_label: Labels::ACTEDIN
         }
       end
     end

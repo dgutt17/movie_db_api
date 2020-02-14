@@ -6,7 +6,8 @@ module Labels
   YEAR = 'Year'.freeze
   TVSHOW = 'TvShow'.freeze
   PRINCIPAL = 'Principal'.freeze
-  KNOWNFOR = 'Known_For'.freeze
+  KNOWNFOR = 'KNONWN_FOR'.freeze
+  ACTEDIN = 'ACTED_IN'.freeze
 
   def self.content_label(type)
       type == :movie ? MOVIE : TVSHOW

@@ -1,0 +1,2 @@
+class Composed < Relationship
+end

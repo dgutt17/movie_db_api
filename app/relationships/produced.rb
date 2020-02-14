@@ -1,0 +1,2 @@
+class Produced < Relationship
+end

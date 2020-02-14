@@ -1,0 +1,2 @@
+class Directed < Relationship
+end

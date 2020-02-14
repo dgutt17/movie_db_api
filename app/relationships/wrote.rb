@@ -1,0 +1,2 @@
+class Wrote < Relationship
+end
