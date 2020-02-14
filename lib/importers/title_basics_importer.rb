@@ -1,5 +1,6 @@
 require 'query_methods'
 require 'importer_parsing_methods'
+require 'labels'
 
 class TitleBasicsImporter
     include Neo4j::QueryMethods
@@ -28,19 +29,6 @@ class TitleBasicsImporter
         import if @movies.length > 0
 
         @content_hash
-    end
-
-    module Labels
-        MOVIE = 'Movie'.freeze
-        CATEGORIZED_AS = 'CATEGORIZED_AS'.freeze
-        RELEASED = 'RELEASED'.freeze
-        GENRE = 'Genre'.freeze
-        YEAR = 'Year'.freeze
-        TVSHOW = 'TvShow'.freeze
-
-        def self.content_label(type)
-            type == :movie ? MOVIE : TVSHOW
-        end
     end
 
     private

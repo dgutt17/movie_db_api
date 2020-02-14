@@ -1,4 +1,5 @@
 require 'query_methods'
+require 'labels'
 
 module BatchCreate
   module Relationships
@@ -22,12 +23,6 @@ module BatchCreate
       def import
         $neo4j_session.query(batch_create_relationships(cypher_hash), list: relationships)
         @relationships = []
-      end
-
-      module Labels
-        PRINCIPAL = 'Principal'.freeze
-        MOVIE = 'Movie'.freeze
-        KNOWNFOR = 'Known_For'.freeze
       end
 
       private
