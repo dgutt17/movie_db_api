@@ -17,7 +17,7 @@ class ImdbImporter
     private
 
     def import_static_nodes
-        puts "Creating Static Nodes................................."
+        puts "Importing Static Nodes................................."
         import_indices
         import_years
         import_months

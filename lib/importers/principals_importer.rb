@@ -13,7 +13,6 @@ class PrincipalsImporter
   end
 
   def run
-    start_time = Time.now
     File.open(file_path) do |file|
       principle_parser(file)
     end
