@@ -27,6 +27,8 @@ module BatchCreate
 
       def cypher_hash
         {
+          match_one_label: Labels::PRINCIPAL,
+          match_two_label: Labels::MOVIE,
           match_obj_one: '{imdb_id: row.from}', 
           match_obj_two: '{imdb_id: row.to}', 
           rel_label: Labels::WROTE

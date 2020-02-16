@@ -19,7 +19,7 @@ module BatchCreate
       end
 
       def import
-        $neo4j_session.query(batch_create_nodes(Labels::TVSHOW), list: nodes)
+        $neo4j_session.query(batch_create_nodes(Labels::TV_SHOW), list: nodes)
         @nodes = []
       end
 
