@@ -1,8 +1,9 @@
 require 'query_methods'
+require 'labels'
 
 module BatchCreate
   module Nodes
-    class Principals
+    class TvShows
       include Neo4j::QueryMethods
 
       attr_reader :nodes
@@ -12,14 +13,15 @@ module BatchCreate
       end
 
       def collect(args)
-        nodes << Principal.new(args).node
+        nodes << TvShow.new(args).node
         puts "Created principal: #{args[:nconst]}, #{args[:primaryName]}"
       end
 
       def import
-        $neo4j_session.query(batch_create_nodes(Labels::PRINCIPAL), list: nodes)
+        $neo4j_session.query(batch_create_nodes(Labels::TVSHOW), list: nodes)
         @nodes = []
       end
+
     end
   end
 end

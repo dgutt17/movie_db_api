@@ -2,7 +2,7 @@ require 'query_methods'
 
 module BatchCreate
   module Nodes
-    class Principals
+    class Movies
       include Neo4j::QueryMethods
 
       attr_reader :nodes
@@ -12,12 +12,12 @@ module BatchCreate
       end
 
       def collect(args)
-        nodes << Principal.new(args).node
-        puts "Created principal: #{args[:nconst]}, #{args[:primaryName]}"
+        nodes << Movie.new(args).node
+        puts "Created movie: #{args[:tconst]}"
       end
 
       def import
-        $neo4j_session.query(batch_create_nodes(Labels::PRINCIPAL), list: nodes)
+        $neo4j_session.query(batch_create_nodes(Labels::MOVIE), list: nodes)
         @nodes = []
       end
     end

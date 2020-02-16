@@ -3,27 +3,23 @@ require 'importer_parsing_methods'
 require 'labels'
 
 class TitleBasicsImporter
-    include Neo4j::QueryMethods
     include ImporterParsingMethods
 
-    attr_accessor :file_path, :movies, :categorized_as_rels_movie, :released_rels_movie, :count, 
-                  :tv_shows, :headers, :categorized_as_rels_tv, :released_rels_tv, :content_hash
+    attr_accessor :file_path, :count, :headers, :content_hash
 
     def initialize
         @file_path = ENV['TITLE_BASICS_PATH'] 
-        @movies = []
-        @categorized_as_rels_movie = []
-        @released_rels_movie = []
-        @tv_shows = []
-        @categorized_as_rels_tv = []
-        @released_rels_tv = []
+        @batch_create_movies = batch_create_movies
+        @batch_create_tv_shows = batch_create_tv_shows
+        @batch_create_categorized_as_relationships = batch_create_categorized_as_relationships
+        @batch_create_relased_relationships = batch_create_relased_relationships
         @count = 0
         @content_hash = {}
     end
 
     def run
         File.open(file_path) do |file|
-            parse_title_basics(file)
+            title_basics_parser(file)
         end
         # Importing the remaining movies and relationships.
         import if @movies.length > 0
@@ -33,161 +29,49 @@ class TitleBasicsImporter
 
     private
 
-    def parse_title_basics(file)
+    def title_basics_parser(file)
         file.each_with_index do |row, index|
             if index == 0
-                @headers = row.split("\t").map{|header| header.gsub("\n","").to_sym}
-                next
+                @headers = create_headers(row)
+            elsif @count == 50000
+                import
+            elsif can_add_data?(row)
+                row = parse_row(row)
+                collect(row)
+                @count += 1
             end
-            parse_content(row)
-            import if @count == 50000
         end
     end
 
-   def parse_row(row)
-      parsed_row = {}
-        row = row.split("\t")
-        headers.each_with_index do |header, index|
-            parsed_row[header] = row[index]
-        end
-
-        parsed_row
+    def batch_create_movies
+        BatchCreate::Nodes::Movies.new
     end
 
-     def parse_content(row)
-        row = parse_row(row)
-        content = Content.new(row).content_node
-        add_data(row, content) if can_add_data?(row, content[:type])
-     end
-
-     def can_add_data?(row, content_type)
-        not_adult_content?(row) && not_before_1950?(row) && content_type != :nothing
-     end
-
-     def not_adult_content?(row)
-        row[:isAdult] == '0'
-     end
-
-     def not_before_1950?(row)
-        row[:startYear].to_i >= 1950
-     end
-
-     def add_data(row, content)
-         content[:type] == :movie ? add_movie(content, row) : add_tv_show(content, row)
-         @count += 1
-     end
-    
-    def add_movie(movie, row)
-        movies << movie[:node]
-        add_categorized_as(row, movie[:type])
-        add_released(row, movie[:type])
-        puts "Created #{movie[:imdb_id]} as a Movie Node"
-    end
-    
-    def add_categorized_as(row, type)
-         if type == :movie
-            categorized_as_rels_movie << CategorizedAs.new(row).node
-         else
-            categorized_as_rels_tv << CategorizedAs.new(row).node
-         end
-    end
-    
-    def add_released(row, type)
-      if type == :movie
-         released_rels_movie << Released.new(row).node
-      else
-         released_rels_tv << Released.new(row).node
-      end
+    def batch_create_tv_shows
+        BatchCreate::Nodes::TvShows.new
     end
 
-     def add_tv_show(tv_show, row)
-        tv_shows << tv_show[:node]
-        add_categorized_as(row, tv_show[:type])
-        add_released(row, tv_show[:type])
-        puts "Created #{tv_show[:imdb_id]} as a TV show Node"
-     end
+    def batch_create_categorized_as_relationships
+        BatchCreate::Relationships::CategorizedAs.new
+    end
 
-     def import
-        @count = 0
+    def batch_create_released_relationships
+        BatchCreate::Relationships::Released.new
+    end
+
+    def collect(row)
+        @batch_create_movies.collect(row)
+        @batch_create_tv_shows.collect(row)
+        @batch_create_categorized_as_relationships.collect(row)
+        @batch_create_relased_relationships.collect(row)
+    end
+
+    def import
         puts "unwinding.............................................."
-        import_movies
-        import_tv_shows
-        empty_arrays
+        @batch_create_movies.import
+        @batch_create_tv_shows.import
+        @batch_create_categorized_as_relationships.import
+        @batch_create_relased_relationships.import
         puts "done..................................................."
-     end
-
-     def empty_arrays
-        @movies = []
-        @categorized_as_rels_movie = []
-        @released_rels_movie = []
-        @tv_shows = []
-        @categorized_as_rels_tv = []
-        @released_rels_tv = []
-     end
-
-     def import_movies
-         import_nodes(:movie)
-         import_categorized_as_rels(:movie)
-         import_released_rels(:movie)
-     end
-
-     def import_tv_shows
-         import_nodes(:tv_show)
-         import_categorized_as_rels(:tv_show)
-         import_released_rels(:tv_show)
-     end
-
-     def import_nodes(type)
-      if type == :movie
-          return_obj = $neo4j_session.query(batch_create_nodes('Movie'), list: @movies)
-          parse_cypher_return_node_object(return_obj)
-      else
-        return_obj = $neo4j_session.query(batch_create_nodes('TvShow'), list: @tv_shows)
-         parse_cypher_return_node_object(return_obj)
-      end
-     end
-
-     def import_categorized_as_rels(type)
-         if type == :movie
-            $neo4j_session.query(categorized_as_query(type), list: @categorized_as_rels_movie.flatten)
-        else
-            $neo4j_session.query(categorized_as_query(type), list: @categorized_as_rels_tv.flatten)
-        end
-     end
-
-     def import_released_rels(type)
-         if type == :movie
-            $neo4j_session.query(released_query(type), list: @released_rels_movie)
-        else
-            $neo4j_session.query(released_query(type), list: @released_rels_tv)
-        end
-     end
-
-     def categorized_as_query(type)
-        batch_create_relationships(categorized_as_hash(type))
-     end
-
-     def categorized_as_hash(type)
-        {
-            node_label_one: Labels.content_label(type),
-            node_label_two: Labels::GENRE, 
-            match_obj_one: '{imdb_id: row.from}', 
-            match_obj_two: '{name: row.to}', 
-            rel_label: Labels::CATEGORIZED_AS
-        }
-     end
-
-     def released_query(type)
-        batch_create_relationships(released_hash(type))
-     end
-
-     def released_hash(type)
-        {
-            node_label_one: Labels.content_label(type), 
-            node_label_two: Labels::YEAR, 
-            match_obj_one: '{imdb_id: row.from}', 
-            match_obj_two: '{value: row.to}', 
-            rel_label: Labels::RELEASED
-        }
-     end
+    end
 end

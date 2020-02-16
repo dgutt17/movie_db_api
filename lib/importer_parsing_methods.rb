@@ -23,4 +23,18 @@ module ImporterParsingMethods
   def imdb_id_key(row)
     row.first.properties[:imdb_id].to_sym
   end
+
+  def can_add_data?(row)
+    not_adult_content?(row) && not_before_1950?(row) && content_type != :nothing
+  end
+
+  private
+
+  def not_adult_content?(row)
+    row[:isAdult] == '0'
+  end
+
+  def not_before_1950?(row)
+    row[:startYear].to_i >= 1950
+  end
 end

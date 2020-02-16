@@ -27,7 +27,6 @@ class ImdbImporter
 
     def importing_content_nodes_and_relationships
         puts "Importing Content Nodes and their associated relationships................................."
-        Genre.create
         @content_hash = TitleBasicsImporter.new.run
     end
 
