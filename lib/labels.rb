@@ -8,6 +8,11 @@ module Labels
   PRINCIPAL = 'Principal'.freeze
   KNOWNFOR = 'KNONWN_FOR'.freeze
   ACTEDIN = 'ACTED_IN'.freeze
+  WROTE = 'WROTE'.freeze
+  CREATED_CINEMATOGRAPHY = 'CREATED_CINEMATOGRAPHY'.freeze
+  DIRECTED = 'DIRECTED'.freeze
+  PRODUCED = 'PRODUCED'.freeze
+  COMPOSED = 'COMPOSED'.freeze
 
   def self.content_label(type)
       type == :movie ? MOVIE : TVSHOW

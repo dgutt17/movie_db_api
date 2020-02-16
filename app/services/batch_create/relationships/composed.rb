@@ -3,7 +3,7 @@ require 'labels'
 
 module BatchCreate
   module Relationships
-    class ActedIn
+    class Composed
       include Neo4j::QueryMethods
       
       attr_reader :relationships, :content_hash
@@ -14,8 +14,8 @@ module BatchCreate
       end
     
       def collect(args)
-        relationships << ActedIn.new(args).relationship if content_hash[relationship[:to].to_sym]
-        puts "Created acted in relationship #{args[:tconst]} -> #{args[:nconst]}"
+        relationships << ::Composed.new(args).relationship if content_hash[relationship[:to].to_sym]
+        puts "Created composed relationship #{args[:tconst]} -> #{args[:nconst]}"
       end
 
       def import
@@ -29,7 +29,7 @@ module BatchCreate
         {
           match_obj_one: '{imdb_id: row.from}', 
           match_obj_two: '{imdb_id: row.to}', 
-          rel_label: Labels::ACTEDIN
+          rel_label: Labels::COMPOSED
         }
       end
     end
