@@ -5,6 +5,7 @@ module BatchCreate
   module Nodes
     class TvShows
       include Neo4j::QueryMethods
+      include ImporterParsingMethods
 
       attr_reader :nodes
 
@@ -13,7 +14,7 @@ module BatchCreate
       end
 
       def collect(args)
-        nodes << TvShow.new(args).node
+        nodes << TvShow.new(args).node if parse_type(args[:titleType]) == :tv_show
         puts "Created principal: #{args[:nconst]}, #{args[:primaryName]}"
       end
 

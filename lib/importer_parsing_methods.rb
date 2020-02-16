@@ -25,7 +25,17 @@ module ImporterParsingMethods
   end
 
   def can_add_data?(row)
-    not_adult_content?(row) && not_before_1950?(row) && content_type != :nothing
+    not_adult_content?(row) && not_before_1950?(row)
+  end
+
+  def parse_type(type)
+    if type == 'movie'
+      :movie
+    elsif type == 'tvSeries' || type == 'tvMiniSeries' || type == 'tvMovie'
+      :tv_show
+    else
+      :nothing
+    end
   end
 
   private
