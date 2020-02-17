@@ -41,7 +41,7 @@ module BatchCreate
 
       def cypher_hash_tv_show
         {
-          match_one_label: Labels::TVSHOW,
+          match_one_label: Labels::TV_SHOW,
           match_two_label: Labels::YEAR,
           match_obj_one: '{imdb_id: row.from}', 
           match_obj_two: '{value: row.to}', 

@@ -9,6 +9,6 @@ class Relationship
   private
 
   def set_relationship
-    {from: args[:nconst], to: args[:tconst], properties: nil}
+    {from: args[:nconst], to: args[:tconst], properties: {}}
   end
 end

@@ -10,6 +10,6 @@ class KnownFor < Relationship
   private
 
   def set_relationships
-    args[:knownForTitles].split(',').map {|movie_id| {from: args[:nconst], to: movie_id}}
+    args[:knownForTitles].split(',').map {|movie_id| {from: args[:nconst], to: movie_id, properties: {}}}
   end
 end

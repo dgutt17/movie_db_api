@@ -4,7 +4,7 @@ class CategorizedAs < Relationship
         imdb_id = movie[:tconst]
         
         @relationships = fetch_genres(movie[:genres]).map do |genre|
-            {from: imdb_id, to: genre}
+            {from: imdb_id, to: genre, properties: {}}
         end
     end
 

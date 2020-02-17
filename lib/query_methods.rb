@@ -18,8 +18,9 @@ module Neo4j
             match_node_one = "MATCH (from:#{args[:match_one_label]} #{args[:match_obj_one]})"
             match_node_two = "MATCH (to:#{args[:match_two_label]} #{args[:match_obj_two]})"
             create_relationship = "CREATE (from)-[rel:#{parse_rel_label(args[:rel_label])}]->(to)"
+            set_properties = 'SET rel += row.properties'
 
-            unwind + ' ' + match_node_one + ' ' + match_node_two + ' ' + ' '+ create_relationship
+            unwind + ' ' + match_node_one + ' ' + match_node_two + ' ' + ' '+ create_relationship + ' ' + set_properties
         end
 
         def batch_merge_nodes(label)

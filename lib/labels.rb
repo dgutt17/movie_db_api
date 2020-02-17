@@ -6,7 +6,7 @@ module Labels
   YEAR = 'Year'.freeze
   TV_SHOW = 'TvShow'.freeze
   PRINCIPAL = 'Principal'.freeze
-  KNOWN_FOR = 'KNONWN_FOR'.freeze
+  KNOWN_FOR = 'KNOWN_FOR'.freeze
   ACTED_IN = 'ACTED_IN'.freeze
   WROTE = 'WROTE'.freeze
   CREATED_CINEMATOGRAPHY = 'CREATED_CINEMATOGRAPHY'.freeze

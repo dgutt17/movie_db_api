@@ -21,10 +21,10 @@ class TitleBasicsImporter
         File.open(file_path) do |file|
             title_basics_parser(file)
         end
-        # Importing the remaining movies and relationships.
-        import
 
-        # @content_hash
+        import
+        binding.pry
+        content_hash
     end
 
     private
@@ -71,10 +71,17 @@ class TitleBasicsImporter
     def import
         @count = 0
         puts "unwinding.............................................."
-        @batch_create_movies.import
-        @batch_create_tv_shows.import
+        movie_cypher_obj = @batch_create_movies.import
+        tv_show_cypher_hash = @batch_create_tv_shows.import
         @batch_create_categorized_as_relationships.import
         @batch_create_released_relationships.import
+
+        add_to_content_hash(movie_cypher_obj, tv_show_cypher_hash)
         puts "done..................................................."
+    end
+
+    def add_to_content_hash(movie_cypher_obj, tv_show_cypher_hash)
+        parse_cypher_return_node_object(movie_cypher_obj)
+        parse_cypher_return_node_object(tv_show_cypher_hash)
     end
 end
