@@ -23,7 +23,6 @@ class TitleBasicsImporter
         end
 
         import
-        binding.pry
         content_hash
     end
 
