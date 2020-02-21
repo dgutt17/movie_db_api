@@ -13,4 +13,6 @@ module Labels
   DIRECTED = 'DIRECTED'.freeze
   PRODUCED = 'PRODUCED'.freeze
   COMPOSED = 'COMPOSED'.freeze
+  RATED = 'RATED'.freeze
+  IMDB_SCORE = 'IMDB_SCORE'.freeze
 end

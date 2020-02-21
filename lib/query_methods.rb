@@ -36,6 +36,10 @@ module Neo4j
             unwind + ' ' + match_node_one + ' ' + match_node_two + ' ' + ' '+ create_relationship
         end
 
+        def batch_update_nodes(labels)
+            "UNWIND {list} as row MATCH (n:#{parse_node_label(label)} {imdb_id: row.id}) SET n += row.properties"
+        end
+
         def parse_node_label(label)
             label.titleize.split(' ').join('_')
         end

@@ -1,6 +1,10 @@
 class Movie < Node
     attr_accessor :node, :movie
 
+    def self.find(imdb_id)
+        
+    end
+
     def initialize(movie)
         @movie = movie
         @node = {
