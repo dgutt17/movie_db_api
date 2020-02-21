@@ -14,7 +14,7 @@ module BatchCreate
       end
     
       def collect(args)
-        relationships << ::Composed.new(args).relationship if content_hash[relationship[:to].to_sym]
+        relationships << ::Composed.new(args).relationship if content_hash[args[:tconst].to_sym]
         puts "Created composed relationship #{args[:tconst]} -> #{args[:nconst]}"
       end
 

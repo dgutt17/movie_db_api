@@ -81,7 +81,7 @@ class TitlePrincipalsImporter
   end
 
   def batch_create_created_cinematography_relationships
-    Batch::Create::Relationships::CreatedCinematography.new(@content_hash)
+    BatchCreate::Relationships::CreatedCinematography.new(@content_hash)
   end
 
   def batch_create_produced_relationships
