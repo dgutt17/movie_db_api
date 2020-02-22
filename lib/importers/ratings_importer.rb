@@ -8,6 +8,7 @@ class RatingsImporter
     @file_path = ENV['RATINGS_PATH']
     @content_hash = content_hash
     @batch_update_content = batch_update_content
+    @batch_create_rated = batch_create_rated
     @count = 0
   end
 
@@ -35,24 +36,24 @@ class RatingsImporter
     import if count > 0
   end
 
-  def batch_create_known_for_relationships
-    BatchCreate::Relationships::Rating.new(@content_hash)
+  def batch_create_rated
+    BatchCreate::Relationships::Rated.new(@content_hash)
   end
 
   def batch_update_content
-    BatchUpdate::Nodes::Content.new
+    BatchUpdate::Nodes::Content.new(@content_hash)
   end
 
   def collect(row)
-    @batch_create_principals.collect(row)
-    @batch_create_known_for_relationships.collect(row)
+    @batch_update_content.collect(row)
+    @batch_create_rated.collect(row)
   end
 
   def import
     @count = 0
     puts "unwinding.............................................."
-    @batch_create_principals.import
-    @batch_create_known_for_relationships.import
+    @batch_update_content.import
+    @batch_create_rated.import
     puts "done..................................................."
   end
 end

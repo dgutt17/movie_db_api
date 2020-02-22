@@ -7,14 +7,15 @@ module BatchUpdate
       include Neo4j::QueryMethods
       include ImporterParsingMethods
 
-      attr_reader :nodes
+      attr_reader :nodes, :content_hash
 
-      def initialize
+      def initialize(content_hash)
+        @content_hash = content_hash
         @nodes = []
       end
 
       def collect(args)
-        nodes << TvShow.new(args).node
+        nodes << Content.rating_properties(args) if content_hash[args[:tconst].to_sym]
         puts "Updated Content: #{args[:tconst]}"
       end
 

@@ -9,6 +9,4 @@ class Rated < Relationship
   def imdb_score_value
     args[:averageRating].to_s.first.to_i
   end
-
-
 end
