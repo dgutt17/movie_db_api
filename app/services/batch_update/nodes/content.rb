@@ -3,7 +3,7 @@ require 'labels'
 
 module BatchUpdate
   module Nodes
-    class TvShow
+    class Content
       include Neo4j::QueryMethods
       include ImporterParsingMethods
 
@@ -15,14 +15,13 @@ module BatchUpdate
 
       def collect(args)
         nodes << TvShow.new(args).node
-        puts "Updated TvShow: #{args[:tconst]}"
+        puts "Updated Content: #{args[:tconst]}"
       end
 
       def import
-        $neo4j_session.query(batch_update_nodes(Labels::TV_SHOW), list: nodes)
+        $neo4j_session.query(batch_update_nodes(Labels::CONTENT), list: nodes)
         @nodes = []
       end
-
     end
   end
 end

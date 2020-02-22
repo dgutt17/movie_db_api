@@ -15,4 +15,5 @@ module Labels
   COMPOSED = 'COMPOSED'.freeze
   RATED = 'RATED'.freeze
   IMDB_SCORE = 'IMDB_SCORE'.freeze
+  CONTENT = 'Content'.freeze
 end

@@ -7,8 +7,7 @@ class RatingsImporter
   def initialize(content_hash)
     @file_path = ENV['RATINGS_PATH']
     @content_hash = content_hash
-    @batch_create_known_for_relationships = batch_create_known_for_relationships
-    @batch_create_principals = batch_create_principals
+    @batch_update_content = batch_update_content
     @count = 0
   end
 
@@ -40,12 +39,8 @@ class RatingsImporter
     BatchCreate::Relationships::Rating.new(@content_hash)
   end
 
-  def batch_update_movies
-    BatchUpdate::Nodes::Movies.new
-  end
-
-  def batch_update_tv_shows
-    BatchUpdate::Nodes::TvShows.new
+  def batch_update_content
+    BatchUpdate::Nodes::Content.new
   end
 
   def collect(row)

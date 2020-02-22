@@ -19,10 +19,16 @@ module BatchCreate
       end
 
       def import
-        cypher_obj = $neo4j_session.query(batch_create_nodes(Labels::TV_SHOW), list: nodes)
+        cypher_obj = $neo4j_session.query(batch_create_nodes(labels), list: nodes)
         @nodes = []
 
         cypher_obj
+      end
+
+      private
+
+      def labels
+        "#{Labels::CONTENT}:#{Labels::TV_SHOW}"
       end
 
     end
