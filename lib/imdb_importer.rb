@@ -11,7 +11,8 @@ class ImdbImporter
         import_genres
         importing_content_nodes_and_relationships
         importing_principal_nodes_and_known_for_relationships
-        importing_principal_content_relationships
+        importing_content_to_principal_relationships
+        importing_ratings
     end
 
     private
@@ -38,6 +39,11 @@ class ImdbImporter
     def importing_content_to_principal_relationships
         puts 'Importing content to principal relationships...........................................'
         TitlePrincipalsImporter.new(@content_hash).run
+    end
+
+    def importing_ratings
+        puts 'Importing IMDB ratings data............................................................'
+        RatingsImporter.new(@content_hash).run
     end
 
     def import_indices

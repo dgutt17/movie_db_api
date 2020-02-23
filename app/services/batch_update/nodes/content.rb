@@ -15,7 +15,7 @@ module BatchUpdate
       end
 
       def collect(args)
-        nodes << Content.rating_properties(args) if content_hash[args[:tconst].to_sym]
+        nodes << ::Content.rating_properties(args) if content_hash[args[:tconst].to_sym]
         puts "Updated Content: #{args[:tconst]}"
       end
 

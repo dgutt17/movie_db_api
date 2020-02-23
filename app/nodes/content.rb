@@ -4,8 +4,8 @@ class Content < Node
     {
       id: args[:tconst],
       properties: {
-        imdb_rating: args[:averageRating],
-        number_of_votes: args[:numVotes]
+        imdb_rating: args[:averageRating].to_f,
+        number_of_votes: args[:numVotes].split("\n").first.to_i
       }
     }
   end

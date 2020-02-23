@@ -15,7 +15,7 @@ module BatchCreate
     
       def collect(args)
         relationships << ::Rated.new(args).relationship if content_hash[args[:tconst].to_sym]
-        puts "Created acted in relationship #{args[:tconst]} -> #{args[:averageRating]}"
+        puts "Created rated relationship #{args[:tconst]} -> #{args[:averageRating]}"
       end
 
       def import
@@ -27,7 +27,7 @@ module BatchCreate
 
       def cypher_hash
         {
-          match_one_label: Labels::MOVIE,
+          match_one_label: Labels::CONTENT,
           match_two_label: Labels::IMDB_SCORE,
           match_obj_one: '{imdb_id: row.from}', 
           match_obj_two: '{value: row.to}', 
