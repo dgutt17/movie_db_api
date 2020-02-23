@@ -14,6 +14,8 @@ module Labels
   PRODUCED = 'PRODUCED'.freeze
   COMPOSED = 'COMPOSED'.freeze
   RATED = 'RATED'.freeze
-  IMDB_SCORE = 'IMDB_SCORE'.freeze
+  IMDB_SCORE = 'Imdb_Score'.freeze
   CONTENT = 'Content'.freeze
+  DAY = 'Day'.freeze
+  MONTH = 'Month'.freeze
 end
