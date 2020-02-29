@@ -2,6 +2,7 @@
 # for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
 
 require_relative 'config/application'
+require 'redis'
 # extend ImdbImporter::StaticNodes
 # extend ImdbImporter
 
@@ -15,6 +16,22 @@ namespace :import do
     end
 
     task :test => :environment do
-        puts "Hello World"
+        redis = Redis.new
+
+        test_obj = {
+        a: {
+        name: 1,
+        address: 'World'
+        },
+        b: {
+            name: 'Test2',
+            address: 'Test2'
+        }
+        }
+
+        redis.set('foo', test_obj.to_json)
+
+        puts "redis get: #{JSON.parse(redis.get('foo'))}"
     end
 end
+
