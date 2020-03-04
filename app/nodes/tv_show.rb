@@ -7,7 +7,9 @@ class TvShow < Node
       properties: {
         imdb_id: tv_show[:tconst], 
         title: parse_title, 
-        runtime: parse_runtime
+        runtime: parse_runtime,
+        imdb_score: parse_score,
+        num_of_votes: parse_votes
       }
     }
   end
@@ -20,5 +22,13 @@ class TvShow < Node
 
   def parse_runtime
     tv_show[:runtimeMinutes].to_i
+  end
+
+  def parse_score
+    tv_show[:averageRating].to_f
+  end
+
+  def parse_votes
+    tv_show[:numVotes].to_i
   end
 end

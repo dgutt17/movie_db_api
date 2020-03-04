@@ -5,16 +5,18 @@ require 'labels'
 class TitleBasicsImporter
     include ImporterParsingMethods
 
-    attr_accessor :file_path, :count, :headers, :content_hash
+    attr_accessor :file_path, :count, :headers, :content_hash, :ratings_hash
 
-    def initialize
+    def initialize(ratings_hash)
         @file_path = ENV['TITLE_BASICS_PATH'] 
         @batch_create_movies = batch_create_movies
         @batch_create_tv_shows = batch_create_tv_shows
         @batch_create_categorized_as_relationships = batch_create_categorized_as_relationships
         @batch_create_released_relationships = batch_create_released_relationships
+        @batch_create_rated_relationships = batch_create_rated_relationships
         @count = 0
         @content_hash = {}
+        @ratings_hash = ratings_hash
     end
 
     def run
@@ -60,11 +62,19 @@ class TitleBasicsImporter
         BatchCreate::Relationships::Released.new
     end
 
+    def batch_create_rated_relationships
+        BatchCreate::Relationships::Rated.new
+    end
+
     def collect(row)
-        @batch_create_movies.collect(row)
-        @batch_create_tv_shows.collect(row)
-        @batch_create_categorized_as_relationships.collect(row)
-        @batch_create_released_relationships.collect(row)
+        if ratings_hash[row[:tconst]].present?
+            row = row.merge(ratings_hash[row[:tconst]])
+            @batch_create_movies.collect(row)
+            @batch_create_tv_shows.collect(row)
+            @batch_create_categorized_as_relationships.collect(row)
+            @batch_create_released_relationships.collect(row)
+            @batch_create_rated_relationships.collect(row)
+        end
     end
 
     def import
@@ -74,6 +84,7 @@ class TitleBasicsImporter
         tv_show_cypher_hash = @batch_create_tv_shows.import
         @batch_create_categorized_as_relationships.import
         @batch_create_released_relationships.import
+        @batch_create_rated_relationships.import
 
         add_to_content_hash(movie_cypher_obj, tv_show_cypher_hash)
         puts "done..................................................."

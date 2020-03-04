@@ -1,18 +1,16 @@
 class ImdbImporter
 
     def initialize
-        # args.each do |importer|
-        #     importer.new.run
-        # end
     end
 
     def batch_create
         import_static_nodes
         import_genres
+        create_ratings_hash
         importing_content_nodes_and_relationships
-        importing_principal_nodes_and_known_for_relationships
-        importing_content_to_principal_relationships
-        importing_ratings
+        # importing_principal_nodes_and_known_for_relationships
+        # importing_content_to_principal_relationships
+        # importing_ratings
     end
 
     private
@@ -26,9 +24,13 @@ class ImdbImporter
         import_imdb_scores
     end
 
+    def create_ratings_hash
+        @ratings_hash = CreateRatingsHash.new.run
+    end
+
     def importing_content_nodes_and_relationships
         puts "Importing Content Nodes and their associated relationships................................."
-        @content_hash = TitleBasicsImporter.new.run
+        @content_hash = TitleBasicsImporter.new(@ratings_hash).run
     end
 
     def importing_principal_nodes_and_known_for_relationships

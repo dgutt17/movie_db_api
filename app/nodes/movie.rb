@@ -12,7 +12,9 @@ class Movie < Node
             properties: {
                 imdb_id: movie[:tconst], 
                 title: parse_title, 
-                runtime: parse_runtime
+                runtime: parse_runtime,
+                imdb_score: parse_score,
+                num_of_votes: parse_votes
             }
         }
     end
@@ -25,5 +27,13 @@ class Movie < Node
 
     def parse_runtime
         movie[:runtimeMinutes].to_i
+    end
+
+    def parse_score
+        movie[:averageRating].to_f
+    end
+
+    def parse_votes
+        movie[:numVotes].to_i
     end
 end
