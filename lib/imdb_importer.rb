@@ -6,12 +6,12 @@ class ImdbImporter
     def batch_create
         import_static_nodes
         import_genres
-        create_ratings_hash
-        create_title_principals_hash
+        create_content_hash
+        create_principals_hash
         importing_content_nodes_and_relationships
-        # importing_principal_nodes_and_known_for_relationships
-        # importing_content_to_principal_relationships
-        # importing_ratings
+        importing_principal_nodes_and_known_for_relationship
+        importing_content_to_principal_relationships
+        importing_ratings
     end
 
     private
@@ -25,22 +25,23 @@ class ImdbImporter
         import_imdb_scores
     end
 
-    def create_ratings_hash
-        @ratings_hash = CreateRatingsHash.new.run
+    def create_content_hash
+        @content_hash = CreateContentHash.new.run
     end
 
     def create_principals_hash
-        @principals_hash = CreatePrincipalsHash.create(@ratings_hash)
+        @principals_hash = CreatePrincipalsHash.create(@content_hash)
     end
 
     def importing_content_nodes_and_relationships
         puts "Importing Content Nodes and their associated relationships................................."
-        @content_hash = TitleBasicsImporter.new(@ratings_hash).run
+        # @content_hash = TitleBasicsImporter.new(@ratings_hash).run
+        TitleBasicsImporter.new(@content_hash).run
     end
 
     def importing_principal_nodes_and_known_for_relationships
         puts "Importing Principal Nodes and Known For Relationships................................."
-        PrincipalsImporter.new(@content_hash).run
+        PrincipalsImporter.new(@principals_hash).run
     end
     
     def importing_content_to_principal_relationships

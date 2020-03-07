@@ -1,9 +1,9 @@
-class CreateRatingsHash
+class CreateContentHash
   include ImporterParsingMethods
 
-  attr_accessor :headers, :ratings_hash
+  attr_accessor :headers, :content_hash
   def initialize
-    @ratings_hash = {}
+    @content_hash = {}
   end
 
   def run
@@ -14,10 +14,10 @@ class CreateRatingsHash
         next if index == 0
         row = parse_row(row)
 
-        @ratings_hash[row[:tconst]] = {averageRating: row[:averageRating].to_f, numVotes: row[:numVotes].to_i} if row[:numVotes].to_i >= 1000
+        @content_hash[row[:tconst]] = true if row[:numVotes].to_i >= 1000
       end
     end
 
-    @ratings_hash
+    @content_hash
   end
 end
