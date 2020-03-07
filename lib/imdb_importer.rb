@@ -7,6 +7,7 @@ class ImdbImporter
         import_static_nodes
         import_genres
         create_ratings_hash
+        create_title_principals_hash
         importing_content_nodes_and_relationships
         # importing_principal_nodes_and_known_for_relationships
         # importing_content_to_principal_relationships
@@ -26,6 +27,10 @@ class ImdbImporter
 
     def create_ratings_hash
         @ratings_hash = CreateRatingsHash.new.run
+    end
+
+    def create_principals_hash
+        @principals_hash = CreatePrincipalsHash.create(@ratings_hash)
     end
 
     def importing_content_nodes_and_relationships

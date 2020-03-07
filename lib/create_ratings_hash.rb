@@ -7,7 +7,7 @@ class CreateRatingsHash
   end
 
   def run
-    File.open('/Users/dangutt/Desktop/imdb_data/title.ratings.tsv') do |file|
+    File.open(ENV['RATINGS_PATH']) do |file|
       @headers = create_headers(file.first)
 
       file.each_with_index do |row, index|
