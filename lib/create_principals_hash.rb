@@ -1,7 +1,7 @@
 class CreatePrincipalsHash
   include ImporterParsingMethods
 
-  attr_accessor :principals_hash, :content_hash
+  attr_accessor :principals_hash, :content_hash, :headers
 
   def initialize(content_hash)
     @principals_hash = {}
@@ -14,6 +14,7 @@ class CreatePrincipalsHash
       file.each_with_index do |row, index|
         next if index == 0
         row = parse_row(row)
+        puts "row: #{row[:tconst]}"
 
         @principals_hash[row[:nconst]] = true if @content_hash[row[:tconst]]
       end

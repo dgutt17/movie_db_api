@@ -4,9 +4,10 @@ class PrincipalsImporter
 
   attr_accessor :principals, :headers, :count, :file_path
 
-  def initialize(content_hash)
+  def initialize(principal_hash)
     @file_path = ENV['PRINCIPALS_PATH']
-    @content_hash = content_hash
+    # @content_hash = content_hash
+    @principal_hash = principal_hash
     @batch_create_known_for_relationships = batch_create_known_for_relationships
     @batch_create_principals = batch_create_principals
     @count = 0
@@ -21,13 +22,13 @@ class PrincipalsImporter
   private
 
   def principle_parser(file)
+    @headers = create_headers(file.first)
     file.each_with_index do |row, index|
-      if index == 0
-        @headers = create_headers(row)
-      elsif @count == 50000
+      next if index == 0
+      row = parse_row(row)
+      if @count == 50000
         import
-      else
-        row = parse_row(row)
+      elsif @principal_hash[row[:nconst]]
         collect(row)
         @count += 1
       end

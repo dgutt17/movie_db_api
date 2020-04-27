@@ -7,7 +7,7 @@ class ImdbImporter
         import_static_nodes
         import_genres
         create_content_hash
-        create_principals_hash
+        # create_principals_hash
         importing_content_nodes_and_relationships
         importing_principal_nodes_and_known_for_relationship
         importing_content_to_principal_relationships
@@ -30,7 +30,7 @@ class ImdbImporter
     end
 
     def create_principals_hash
-        @principals_hash = CreatePrincipalsHash.create(@content_hash)
+        @principals_hash = CreatePrincipalsHash.new(@content_hash).run
     end
 
     def importing_content_nodes_and_relationships
@@ -41,7 +41,7 @@ class ImdbImporter
 
     def importing_principal_nodes_and_known_for_relationships
         puts "Importing Principal Nodes and Known For Relationships................................."
-        PrincipalsImporter.new(@principals_hash).run
+        PrincipalsImporter.new(@content_hash).run
     end
     
     def importing_content_to_principal_relationships

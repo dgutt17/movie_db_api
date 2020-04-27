@@ -21,13 +21,13 @@ class RatingsImporter
   private
 
   def rating_parser(file)
+    @headers = create_headers(file.first) 
     file.each_with_index do |row, index|
-      if index == 0
-        @headers = create_headers(row)
-      elsif @count == 50000
+      next if index == 0
+      row = parse_row(row)
+      if @count == 50000
         import
-      else
-        row = parse_row(row)
+      elsif content_hash[row[:tconst]]
         collect(row)
         @count += 1
       end

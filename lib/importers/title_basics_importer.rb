@@ -25,23 +25,20 @@ class TitleBasicsImporter
         end
 
         import
-        content_hash
     end
 
     private
 
     def title_basics_parser(file)
+        @headers = create_headers(file.first)
         file.each_with_index do |row, index|
-            if index == 0
-                @headers = create_headers(row)
-            elsif @count == 50000
+            next if index == 0
+            row = parse_row(row)
+            if @count == 50000
                 import
-            else
-                row = parse_row(row)
-                if can_add_data?(row)
-                    collect(row)
-                    @count += 1
-                end
+            elsif can_add_data?(row) && content_hash[row[:tconst]]
+                collect(row)
+                @count += 1
             end
         end
     end
