@@ -2,20 +2,22 @@ require 'importer_parsing_methods'
 class RatingsImporter
   include ImporterParsingMethods
 
-  attr_accessor :principals, :headers, :count, :file_path
+  attr_accessor :principals, :headers, :count, :file_path, :content_hash
 
-  def initialize(content_hash)
+  def initialize
     @file_path = ENV['RATINGS_PATH']
-    @content_hash = content_hash
-    @batch_update_content = batch_update_content
+    @batch_create_content = batch_create_content
     @batch_create_rated = batch_create_rated
     @count = 0
+    @content_hash = {}
   end
 
   def run
     File.open(file_path) do |file|
       rating_parser(file)
     end
+
+    content_hash
   end
 
   private
@@ -28,6 +30,7 @@ class RatingsImporter
         import
       else
         row = parse_row(row)
+        next if row[:numVotes].to_i < 1000
         collect(row)
         @count += 1
       end
@@ -37,23 +40,28 @@ class RatingsImporter
   end
 
   def batch_create_rated
-    BatchCreate::Relationships::Rated.new(@content_hash)
+    BatchCreate::Relationships::Rated.new
   end
 
-  def batch_update_content
-    BatchUpdate::Nodes::Content.new(@content_hash)
+  def batch_create_content
+    BatchCreate::Nodes::Content.new
   end
 
   def collect(row)
-    @batch_update_content.collect(row)
+    @batch_create_content.collect(row)
     @batch_create_rated.collect(row)
   end
 
   def import
     @count = 0
     puts "unwinding.............................................."
-    @batch_update_content.import
+    cypher_object = @batch_create_content.import
     @batch_create_rated.import
+    add_to_content_hash(cypher_object)
     puts "done..................................................."
+  end
+
+  def add_to_content_hash(cypher_object)
+    parse_cypher_return_node_object(cypher_object)
   end
 end

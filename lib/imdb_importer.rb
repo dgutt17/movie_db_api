@@ -1,5 +1,7 @@
 class ImdbImporter
 
+    attr_reader :content_hash
+
     def initialize
         # args.each do |importer|
         #     importer.new.run
@@ -9,10 +11,10 @@ class ImdbImporter
     def batch_create
         import_static_nodes
         import_genres
-        importing_content_nodes_and_relationships
-        importing_principal_nodes_and_known_for_relationships
-        importing_content_to_principal_relationships
-        importing_ratings
+        @content_hash = importing_ratings
+        # importing_content_nodes_and_relationships
+        # importing_principal_nodes_and_known_for_relationships
+        # importing_content_to_principal_relationships
     end
 
     private
@@ -43,7 +45,7 @@ class ImdbImporter
 
     def importing_ratings
         puts 'Importing IMDB ratings data............................................................'
-        RatingsImporter.new(@content_hash).run
+        RatingsImporter.new.run
     end
 
     def import_indices

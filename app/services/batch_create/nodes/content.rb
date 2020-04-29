@@ -1,7 +1,7 @@
 require 'query_methods'
 require 'labels'
 
-module BatchUpdate
+module BatchCreate
   module Nodes
     class Content
       include Neo4j::QueryMethods
@@ -15,13 +15,14 @@ module BatchUpdate
       end
 
       def collect(args)
-        nodes << ::Content.rating_properties(args)
-        puts "Updated Content: #{args[:tconst]}"
+        nodes << ::Content.new(args).node
+        puts "New Content: #{args[:tconst]}"
       end
 
       def import
         cypher_obj = $neo4j_session.query(batch_create_nodes(Labels::CONTENT), list: nodes)
         @nodes = []
+
         cypher_obj
       end
     end

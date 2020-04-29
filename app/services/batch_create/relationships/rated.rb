@@ -6,15 +6,15 @@ module BatchCreate
     class Rated
       include Neo4j::QueryMethods
       
-      attr_reader :relationships, :content_hash
+      attr_reader :relationships
     
-      def initialize(content_hash)
-        @content_hash = content_hash
+      def initialize
+        # @content_hash = content_hash
         @relationships = []
       end
     
       def collect(args)
-        relationships << ::Rated.new(args).relationship if content_hash[args[:tconst].to_sym]
+        relationships << ::Rated.new(args).relationship
         puts "Created rated relationship #{args[:tconst]} -> #{args[:averageRating]}"
       end
 
