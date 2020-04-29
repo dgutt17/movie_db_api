@@ -25,7 +25,7 @@ module ImporterParsingMethods
   end
 
   def can_add_data?(row)
-    not_adult_content?(row) && not_before_1950?(row)
+    not_adult_content?(row)
   end
 
   def parse_type(type)

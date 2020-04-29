@@ -1,16 +1,14 @@
 class Movie < Node
-    attr_accessor :node, :movie
-
-    def self.find(imdb_id)
-        
-    end
+    attr_reader :movie
 
     def initialize(movie)
         @movie = movie
-        @node = {
+    end
+
+    def node
+        @node ||= {
             id: movie[:tconst],
             properties: {
-                imdb_id: movie[:tconst], 
                 title: parse_title, 
                 runtime: parse_runtime
             }

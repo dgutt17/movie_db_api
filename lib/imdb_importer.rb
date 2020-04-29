@@ -12,7 +12,7 @@ class ImdbImporter
         import_static_nodes
         import_genres
         @content_hash = importing_ratings
-        # importing_content_nodes_and_relationships
+        importing_content_nodes_and_relationships
         # importing_principal_nodes_and_known_for_relationships
         # importing_content_to_principal_relationships
     end
@@ -30,17 +30,17 @@ class ImdbImporter
 
     def importing_content_nodes_and_relationships
         puts "Importing Content Nodes and their associated relationships................................."
-        @content_hash = TitleBasicsImporter.new.run
+        TitleBasicsImporter.new(content_hash).run
     end
 
     def importing_principal_nodes_and_known_for_relationships
         puts "Importing Principal Nodes and Known For Relationships................................."
-        PrincipalsImporter.new(@content_hash).run
+        PrincipalsImporter.new(content_hash).run
     end
     
     def importing_content_to_principal_relationships
         puts 'Importing content to principal relationships...........................................'
-        TitlePrincipalsImporter.new(@content_hash).run
+        TitlePrincipalsImporter.new(content_hash).run
     end
 
     def importing_ratings

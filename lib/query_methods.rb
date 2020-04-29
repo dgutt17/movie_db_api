@@ -31,6 +31,10 @@ module Neo4j
             "UNWIND {list} as row MATCH (n:#{parse_node_label(label)} {imdb_id: row.id}) SET n += row.properties"
         end
 
+        def batch_update_node_label(new_label:, old_label:)
+            "UNWIND {list} as row MATCH (n:#{parse_node_label(old_label)} {imdb_id: row.id}) SET n :#{parse_node_label(new_label)}"
+        end
+
         def parse_node_label(label)
             label.titleize.split(' ').join('_')
         end
