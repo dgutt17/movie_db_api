@@ -25,7 +25,7 @@ module ImporterParsingMethods
   end
 
   def can_add_data?(row)
-    not_adult_content?(row) && parse_type(row) != :nothing
+    not_adult_content?(row) && parse_type(row[:titleType]) != :nothing
   end
 
   def parse_type(type)
