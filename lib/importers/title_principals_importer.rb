@@ -7,6 +7,7 @@ class TitlePrincipalsImporter
   def initialize(content_hash)
     @file_path = ENV['TITLE_PRINCIPALS_PATH']
     @content_hash = content_hash
+
     @batch_create_acted_in_relationships = batch_create_acted_in_relationships
     @batch_create_created_cinematography_relationships = batch_create_created_cinematography_relationships
     @batch_create_produced_relationships = batch_create_produced_relationships
@@ -78,26 +79,26 @@ class TitlePrincipalsImporter
   end
 
   def batch_create_acted_in_relationships
-    BatchCreate::Relationships::ActedIn.new(@content_hash)
+    BatchCreate::Relationships::ActedIn.new
   end
 
   def batch_create_created_cinematography_relationships
-    BatchCreate::Relationships::CreatedCinematography.new(@content_hash)
+    BatchCreate::Relationships::CreatedCinematography.new
   end
 
   def batch_create_produced_relationships
-    BatchCreate::Relationships::Produced.new(@content_hash)
+    BatchCreate::Relationships::Produced.new
   end
 
   def batch_create_wrote_relationships
-    BatchCreate::Relationships::Wrote.new(@content_hash)
+    BatchCreate::Relationships::Wrote.new
   end
 
   def batch_create_directed_relationships
-    BatchCreate::Relationships::Directed.new(@content_hash)
+    BatchCreate::Relationships::Directed.new
   end
 
   def batch_create_composed_relationships
-    BatchCreate::Relationships::Composed.new(@content_hash)
+    BatchCreate::Relationships::Composed.new
   end
 end

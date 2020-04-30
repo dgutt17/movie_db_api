@@ -6,20 +6,19 @@ module BatchCreate
     class CreatedCinematography
       include Neo4j::QueryMethods
       
-      attr_reader :relationships, :content_hash
+      attr_reader :relationships
     
-      def initialize(content_hash)
-        @content_hash = content_hash
+      def initialize
         @relationships = []
       end
     
       def collect(args)
-        relationships << ::CreatedCinematography.new(args).relationship if content_hash[args[:tconst].to_sym]
+        relationships << ::CreatedCinematography.new(args).relationship
         puts "Created created cinematography relationship #{args[:tconst]} -> #{args[:nconst]}"
       end
 
       def import
-        $neo4j_session.query(batch_create_relationships(cypher_hash), list: relationships)
+        $neo4j_session.query(batch_merge_relationships(cypher_hash), list: relationships)
         @relationships = []
       end
 

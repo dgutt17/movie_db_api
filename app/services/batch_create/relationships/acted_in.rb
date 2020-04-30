@@ -6,20 +6,20 @@ module BatchCreate
     class ActedIn
       include Neo4j::QueryMethods
       
-      attr_reader :relationships, :content_hash
+      attr_reader :relationships
     
-      def initialize(content_hash)
-        @content_hash = content_hash
+      def initialize
         @relationships = []
       end
     
       def collect(args)
-        relationships << ::ActedIn.new(args).relationship if content_hash[args[:tconst].to_sym]
+        relationships << ::ActedIn.new(args).relationship
         puts "Created acted in relationship #{args[:tconst]} -> #{args[:nconst]}"
       end
 
       def import
-        $neo4j_session.query(batch_create_relationships(cypher_hash), list: relationships)
+        binding.pry
+        $neo4j_session.query(batch_merge_relationships(cypher_hash), list: relationships)
         @relationships = []
       end
 

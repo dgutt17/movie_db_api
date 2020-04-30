@@ -20,11 +20,11 @@ module Neo4j
 
         def batch_merge_relationships(args)
             unwind = 'UNWIND {list} as row'
-            match_node_one = "MATCH (from #{args[:match_obj_one]})"
-            match_node_two = "MATCH (to #{args[:match_obj_two]})"
-            create_relationship = "MERGE (from)-[rel:#{parse_rel_label(args[:rel_label])}]->(to)"
+            node_one = "from #{args[:match_obj_one]}"
+            node_two = "to #{args[:match_obj_two]}"
+            create_relationship = "MERGE (#{node_one})-[rel:#{parse_rel_label(args[:rel_label])}]->(#{node_two})"
 
-            unwind + ' ' + match_node_one + ' ' + match_node_two + ' ' + ' '+ create_relationship
+            unwind + ' ' + ' ' + ' '+ create_relationship
         end
 
         def batch_update_nodes(label)

@@ -8,18 +8,17 @@ module BatchCreate
 
       attr_reader :relationships, :content_hash
 
-      def initialize(content_hash)
-        @content_hash = content_hash
+      def initialize
         @relationships = []
       end
     
       def collect(args)
-        relationships << ::Wrote.new(args).relationship if content_hash[args[:tconst].to_sym]
+        relationships << ::Wrote.new(args).relationship
         puts "Created a wrote relationship #{args[:tconst]} -> #{args[:nconst]}"
       end
 
       def import
-        $neo4j_session.query(batch_create_relationships(cypher_hash), list: relationships)
+        $neo4j_session.query(batch_merge_relationships(cypher_hash), list: relationships)
         @relationships = []
       end
 
