@@ -25,7 +25,7 @@ module ImporterParsingMethods
   end
 
   def can_add_data?(row)
-    not_adult_content?(row)
+    not_adult_content?(row) && parse_type(row) != :nothing
   end
 
   def parse_type(type)
@@ -42,9 +42,5 @@ module ImporterParsingMethods
 
   def not_adult_content?(row)
     row[:isAdult] == '0'
-  end
-
-  def not_before_1950?(row)
-    row[:startYear].to_i >= 1950
   end
 end

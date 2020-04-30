@@ -30,7 +30,7 @@ class RatingsImporter
         import
       else
         row = parse_row(row)
-        next if row[:numVotes].to_i < 1000
+        next if row[:numVotes].to_i < ENV['MINIMUM_NUM_OF_VOTES'].to_i
         collect(row)
         @count += 1
       end

@@ -2,7 +2,7 @@ require 'importer_parsing_methods'
 class TitlePrincipalsImporter
   include ImporterParsingMethods
 
-  attr_accessor :headers, :count, :file_path
+  attr_accessor :headers, :count, :file_path, :content_hash
 
   def initialize(content_hash)
     @file_path = ENV['TITLE_PRINCIPALS_PATH']
@@ -34,6 +34,7 @@ class TitlePrincipalsImporter
         import
       else
         row = parse_row(row)
+        next if !content_hash[row[:tconst].to_sym]
         collect(row)
         @count += 1
       end
