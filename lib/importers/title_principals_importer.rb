@@ -101,4 +101,8 @@ class TitlePrincipalsImporter
   def batch_create_composed_relationships
     BatchCreate::Relationships::Composed.new
   end
+
+  def add_to_principal_hash(cypher_object)
+    parse_cypher_return_node_object(cypher_object)
+  end
 end

@@ -14,7 +14,7 @@ class ImdbImporter
         @content_hash = importing_ratings
         importing_content_nodes_and_relationships
         importing_content_to_principal_relationships
-        # importing_principal_nodes_and_known_for_relationships
+        importing_principal_nodes_and_known_for_relationships
     end
 
     private

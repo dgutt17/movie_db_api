@@ -18,7 +18,8 @@ module BatchCreate
       end
 
       def import
-        $neo4j_session.query(batch_merge_relationships(cypher_hash), list: relationships)
+        cypher_object = $neo4j_session.query(batch_merge_relationships(cypher_hash), list: relationships)
+        add_to_principal_hash(cypher_object)
         @relationships = []
       end
 
@@ -32,6 +33,10 @@ module BatchCreate
           match_obj_two: '{imdb_id: row.to}', 
           rel_label: Labels::CREATED_CINEMATOGRAPHY
         }
+      end
+
+      def add_to_principal_hash(cypher_object)
+        parse_cypher_return_node_object(cypher_object)
       end
     end
   end

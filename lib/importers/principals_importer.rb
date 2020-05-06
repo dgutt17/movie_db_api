@@ -2,13 +2,13 @@ require 'importer_parsing_methods'
 class PrincipalsImporter
   include ImporterParsingMethods
 
-  attr_accessor :principals, :headers, :count, :file_path
+  attr_accessor :principals, :headers, :count, :file_path, :content_hash
 
   def initialize(content_hash)
     @file_path = ENV['PRINCIPALS_PATH']
     @content_hash = content_hash
     @batch_create_known_for_relationships = batch_create_known_for_relationships
-    @batch_create_principals = batch_create_principals
+    @batch_update_principals = batch_update_principals
     @count = 0
   end
 
@@ -28,6 +28,7 @@ class PrincipalsImporter
         import
       else
         row = parse_row(row)
+        next if !content_hash[row[:tconst].to_sym]
         collect(row)
         @count += 1
       end
@@ -40,19 +41,19 @@ class PrincipalsImporter
     BatchCreate::Relationships::KnownFors.new(@content_hash)
   end
 
-  def batch_create_principals
-    BatchCreate::Nodes::Principals.new
+  def batch_update_principals
+    BatchUpdate::Nodes::Principals.new
   end
 
   def collect(row)
-    @batch_create_principals.collect(row)
+    @batch_update_principals.collect(row)
     @batch_create_known_for_relationships.collect(row)
   end
 
   def import
     @count = 0
     puts "unwinding.............................................."
-    @batch_create_principals.import
+    @batch_update_principals.import
     @batch_create_known_for_relationships.import
     puts "done..................................................."
   end

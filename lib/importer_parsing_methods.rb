@@ -16,7 +16,8 @@ module ImporterParsingMethods
   def parse_cypher_return_node_object(obj)
     obj.rows.each do |row|
       imdb_id = row.first.properties[:imdb_id].to_sym
-      content_hash[imdb_id_key(row)] = true
+      content_hash[imdb_id_key(row)] = true if content_hash.present?
+      prinicpal_hash[imdb_id_key(row)] = true if prinicpal_hash.present?
     end
   end
 

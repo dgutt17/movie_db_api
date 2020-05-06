@@ -22,7 +22,7 @@ module Neo4j
             unwind = 'UNWIND {list} as row'
             merge_node_one = "MERGE (from:#{args[:match_one_label]} #{args[:match_obj_one]})"
             merge_node_two = "MERGE (to:#{args[:match_two_label]} #{args[:match_obj_two]})"
-            create_relationship = "MERGE (from)-[rel:#{parse_rel_label(args[:rel_label])}]->(to)"
+            create_relationship = "MERGE (from)-[rel:#{parse_rel_label(args[:rel_label])}]->(to) return from"
 
             unwind + ' '  + merge_node_one + ' ' + merge_node_two + ' ' + ' '+ create_relationship
         end
