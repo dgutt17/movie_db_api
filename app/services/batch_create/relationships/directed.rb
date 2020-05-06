@@ -18,8 +18,10 @@ module BatchCreate
       end
 
       def import
-        $neo4j_session.query(batch_merge_relationships(cypher_hash), list: relationships)
+        cypher_object = $neo4j_session.query(batch_merge_relationships(cypher_hash), list: relationships)
         @relationships = []
+
+        cypher_object
       end
 
       private

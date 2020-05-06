@@ -1,6 +1,6 @@
 class ImdbImporter
 
-    attr_reader :content_hash
+    attr_reader :content_hash, :principal_hash
 
     def initialize
         # args.each do |importer|
@@ -13,7 +13,7 @@ class ImdbImporter
         import_genres
         @content_hash = importing_ratings
         importing_content_nodes_and_relationships
-        importing_content_to_principal_relationships
+        @principal_hash = importing_content_to_principal_relationships
         importing_principal_nodes_and_known_for_relationships
     end
 
@@ -35,7 +35,7 @@ class ImdbImporter
 
     def importing_principal_nodes_and_known_for_relationships
         puts "Importing Principal Nodes and Known For Relationships................................."
-        PrincipalsImporter.new(content_hash).run
+        PrincipalsImporter.new(content_hash, principal_hash).run
     end
     
     def importing_content_to_principal_relationships

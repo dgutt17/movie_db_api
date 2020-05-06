@@ -2,7 +2,7 @@ require 'importer_parsing_methods'
 class TitlePrincipalsImporter
   include ImporterParsingMethods
 
-  attr_accessor :headers, :count, :file_path, :content_hash
+  attr_accessor :headers, :count, :file_path, :content_hash, :principal_hash
 
   def initialize(content_hash)
     @file_path = ENV['TITLE_PRINCIPALS_PATH']
@@ -17,12 +17,16 @@ class TitlePrincipalsImporter
 
     @count = 0
     @editor_count = 0
+
+    @principal_hash = {}
   end
 
   def run
     File.open(file_path) do |file|
       title_principal_parser(file)
     end
+
+    principal_hash
   end
 
   private
@@ -68,13 +72,15 @@ class TitlePrincipalsImporter
 
   def import
     @count = 0
+    cypher_objects = []
     puts "unwinding.............................................."
-    @batch_create_acted_in_relationships.import
-    @batch_create_directed_relationships.import
-    @batch_create_composed_relationships.import
-    @batch_create_wrote_relationships.import
-    @batch_create_created_cinematography_relationships.import
-    @batch_create_produced_relationships.import
+    cypher_objects << @batch_create_acted_in_relationships.import
+    cypher_objects << @batch_create_directed_relationships.import
+    cypher_objects << @batch_create_composed_relationships.import
+    cypher_objects << @batch_create_wrote_relationships.import
+    cypher_objects << @batch_create_created_cinematography_relationships.import
+    cypher_objects << @batch_create_produced_relationships.import
+    add_to_principal_hash(cypher_objects)
     puts "done..................................................."
   end
 
@@ -102,7 +108,7 @@ class TitlePrincipalsImporter
     BatchCreate::Relationships::Composed.new
   end
 
-  def add_to_principal_hash(cypher_object)
-    parse_cypher_return_node_object(cypher_object)
+  def add_to_principal_hash(cypher_objects)
+    parse_cypher_return_node_object(cypher_objects, true)
   end
 end
