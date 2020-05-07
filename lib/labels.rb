@@ -4,7 +4,7 @@ module Labels
   RELEASED = 'RELEASED'.freeze
   GENRE = 'Genre'.freeze
   YEAR = 'Year'.freeze
-  TV_SHOW = 'TvShow'.freeze
+  TV_SHOW = 'Tv_Show'.freeze
   PRINCIPAL = 'Principal'.freeze
   KNOWN_FOR = 'KNOWN_FOR'.freeze
   ACTED_IN = 'ACTED_IN'.freeze

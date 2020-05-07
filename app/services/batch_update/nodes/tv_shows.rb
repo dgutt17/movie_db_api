@@ -16,7 +16,7 @@ module BatchUpdate
       def collect(args)
         return  if parse_type(args[:titleType]) != :tv_show
         nodes << TvShow.new(args).node
-        puts "Created Tv Show: #{args[:nconst]}, #{args[:primaryName]}"
+        puts "Created Tv Show: #{args[:tconst]}, #{args[:primaryName]}"
       end
 
       def import
