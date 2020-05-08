@@ -52,6 +52,8 @@ class TitlePrincipalsImporter
     case row[:category]
     when 'actor'
       @batch_create_acted_in_relationships.collect(row)
+    when 'actress'
+      @batch_create_acted_in_relationships.collect(row)
     when 'self'
       @batch_create_acted_in_relationships.collect(row)
     when 'director'
@@ -65,7 +67,7 @@ class TitlePrincipalsImporter
     when 'editor'
       puts 'Editor.............................'
       @editor_count += 1
-    else
+    when 'producer'
       @batch_create_produced_relationships.collect(row)
     end      
   end
