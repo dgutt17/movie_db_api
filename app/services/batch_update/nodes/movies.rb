@@ -1,4 +1,4 @@
-require 'query_methods'
+# require 'query_methods'
 
 module BatchUpdate
   module Nodes

@@ -1,4 +1,4 @@
-require 'query_methods'
+# require 'query_methods'
 
 module BatchCreate
   module Nodes

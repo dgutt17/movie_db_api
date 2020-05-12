@@ -1,5 +1,5 @@
-require 'query_methods'
-require 'labels'
+# require 'query_methods'
+# require 'labels'
 
 module BatchUpdate
   module Nodes
