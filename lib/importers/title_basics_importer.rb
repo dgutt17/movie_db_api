@@ -11,6 +11,7 @@ class TitleBasicsImporter
         count = 0
         content.each do |row|
             if count == 50000
+                count = 0
                 import
             elsif can_add_data?(row)
                 collect(row)
@@ -52,7 +53,6 @@ class TitleBasicsImporter
     end
 
     def import
-        @count = 0
         puts "unwinding.............................................."
         batch_create_movies.import
         batch_create_tv_shows.import
