@@ -11,10 +11,9 @@ class ImdbImporter
     def batch_create
         import_static_nodes
         import_genres
-        @content_hash = importing_ratings
         importing_content_nodes_and_relationships
-        @principal_hash = importing_content_to_principal_relationships
-        importing_principal_nodes_and_known_for_relationships
+        # @principal_hash = importing_content_to_principal_relationships
+        # importing_principal_nodes_and_known_for_relationships
     end
 
     private
@@ -26,6 +25,10 @@ class ImdbImporter
         import_months
         import_days
         import_imdb_scores
+    end
+
+    def content_hash
+        @content_hash ||= ContentParser.new.run
     end
 
     def importing_content_nodes_and_relationships
@@ -72,5 +75,4 @@ class ImdbImporter
         puts 'Importing Genre Nodes....................................'
         Genre.create
     end
-    
 end

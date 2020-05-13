@@ -1,9 +1,9 @@
 class CategorizedAs < Relationship
     attr_accessor :relationships
-    def initialize(movie)
-        imdb_id = movie[:tconst]
+    def initialize(content)
+        imdb_id = content[:tconst]
         
-        @relationships = fetch_genres(movie[:genres]).map do |genre|
+        @relationships = fetch_genres(content[:genres]).map do |genre|
             {from: imdb_id, to: genre, properties: {}}
         end
     end

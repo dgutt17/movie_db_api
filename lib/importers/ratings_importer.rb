@@ -1,4 +1,3 @@
-require 'importer_parsing_methods'
 class RatingsImporter
   include ImporterParsingMethods
 

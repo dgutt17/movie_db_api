@@ -34,7 +34,8 @@ module ImporterParsingMethods
   end
 
   def can_add_data?(row)
-    not_adult_content?(row) && parse_type(row[:titleType]) != :nothing
+    # not_adult_content?(row) && parse_type(row[:titleType]) != :nothing
+    not_adult_content?(row) && row[:numVotes].to_i >= 1000
   end
 
   def parse_type(type)

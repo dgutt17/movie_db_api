@@ -1,89 +1,73 @@
-require 'query_methods'
-require 'importer_parsing_methods'
-require 'labels'
+# require 'query_methods'
+# require 'importer_parsing_methods'
+# require 'labels'
 
 class TitleBasicsImporter
     include ImporterParsingMethods
 
-    attr_accessor :file_path, :count, :headers, :content_hash
+    attr_accessor :headers, :content
 
-    def initialize(content_hash)
-        @file_path = ENV['TITLE_BASICS_PATH'] 
-        @batch_update_movies = batch_update_movies
-        @batch_update_tv_shows = batch_update_tv_shows
-        @batch_create_categorized_as_relationships = batch_create_categorized_as_relationships
-        @batch_create_released_relationships = batch_create_released_relationships
-        @count = 0
-        @content_hash = content_hash
-        @deletion_count = 0
+    def initialize(content)
+        # @batch_create_movies = batch_create_movies
+        # @batch_create_tv_shows = batch_create_tv_shows
+        # @batch_create_categorized_as_relationships = batch_create_categorized_as_relationships
+        # @batch_create_released_relationships = batch_create_released_relationships
+        # @batch_create_rated_relationships = batch_create_rated_relationships
+        @content = content
     end
 
     def run
-        File.open(file_path) do |file|
-            title_basics_parser(file)
+        count = 0
+        content.each do |row|
+            if count == 50000
+                import
+            elsif can_add_data?(row)
+                collect(row)
+                count += 1
+            end
         end
 
         import
-        puts "How many should be deleted: #{@deletion_count}"
     end
 
     private
 
-    def title_basics_parser(file)
-        file.each_with_index do |row, index|
-            if index == 0
-                @headers = create_headers(row)
-            elsif @count == 50000
-                import
-            else
-                row = parse_row(row)
-                next if !content_hash[row[:tconst].to_sym]
-                if can_add_data?(row)
-                    collect(row)
-                else
-                    @deletion_count += 1
-                    # collect_for_deletion(row)
-                end
-                @count += 1
-            end
-        end
+    def batch_create_movies
+        @batch_create_movies ||= BatchCreate::Nodes::Movies.new
     end
 
-    def batch_update_movies
-        BatchUpdate::Nodes::Movies.new
-    end
-
-    def batch_update_tv_shows
-        BatchUpdate::Nodes::TvShows.new
+    def batch_create_tv_shows
+        @batch_create_tv_shows ||= BatchCreate::Nodes::TvShows.new
     end
 
     def batch_create_categorized_as_relationships
-        BatchCreate::Relationships::CategorizedAs.new
+        @batch_create_categorized_as_relationships ||= BatchCreate::Relationships::CategorizedAs.new
     end
 
     def batch_create_released_relationships
-        BatchCreate::Relationships::Released.new
+        @batch_create_released_relationships ||= BatchCreate::Relationships::Released.new
     end
+
+    def batch_create_rated_relationships
+        @batch_create_released_relationships ||= BatchCreate::Relationships::Rated.new
+     end
 
     def collect(row)
-        @batch_update_movies.collect(row)
-        @batch_update_tv_shows.collect(row)
-        @batch_create_categorized_as_relationships.collect(row)
-        @batch_create_released_relationships.collect(row)
-    end
-
-    def collect_for_deletion(row)
-        @batch_update_movies.collect_for_deletion(row)
-        @batch_update_tv_shows.collect_for_deletion(row)
+        batch_create_movies.collect(row)
+        batch_create_tv_shows.collect(row)
+        batch_create_categorized_as_relationships.collect(row)
+        batch_create_released_relationships.collect(row)
+        batch_create_rated_relationships.collect(row)
     end
 
     def import
         @count = 0
         puts "unwinding.............................................."
-        @batch_update_movies.import
-        @batch_update_tv_shows.import
-        @batch_create_categorized_as_relationships.import
-        @batch_create_released_relationships.import
+        batch_create_movies.import
+        batch_create_tv_shows.import
+        batch_create_categorized_as_relationships.import
+        batch_create_released_relationships.import
+        batch_create_rated_relationships.import
         puts "done..................................................."
     end
 end

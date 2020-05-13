@@ -8,7 +8,10 @@ class TvShow < Node
     @node ||= {
       id: tv_show[:tconst],
       properties: {
+        imdb_id: tv_show[:tconst],
         title: parse_title, 
+        imdb_rating: tv_show[:averageRating].to_f,
+        number_of_votes: tv_show[:numVotes].split("\n").first.to_i,
         runtime: parse_runtime
       }
     }
