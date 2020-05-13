@@ -46,11 +46,6 @@ class ImdbImporter
         TitlePrincipalsImporter.new(content_hash).run
     end
 
-    def importing_ratings
-        puts 'Importing IMDB ratings data............................................................'
-        RatingsImporter.new.run
-    end
-
     def import_indices
         Index.create
     end

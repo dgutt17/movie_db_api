@@ -1,18 +1,9 @@
-# require 'query_methods'
-# require 'importer_parsing_methods'
-# require 'labels'
-
 class TitleBasicsImporter
     include ImporterParsingMethods
 
     attr_accessor :headers, :content
 
     def initialize(content)
-        # @batch_create_movies = batch_create_movies
-        # @batch_create_tv_shows = batch_create_tv_shows
-        # @batch_create_categorized_as_relationships = batch_create_categorized_as_relationships
-        # @batch_create_released_relationships = batch_create_released_relationships
-        # @batch_create_rated_relationships = batch_create_rated_relationships
         @content = content
     end
 
