@@ -12,8 +12,8 @@ class ImdbImporter
         import_static_nodes
         import_genres
         importing_content_nodes_and_relationships
-        # @principal_hash = importing_content_to_principal_relationships
-        # importing_principal_nodes_and_known_for_relationships
+        @principal_hash = importing_content_to_principal_relationships
+        importing_principal_nodes_and_known_for_relationships
     end
 
     private

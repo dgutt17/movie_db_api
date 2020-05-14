@@ -32,14 +32,13 @@ class TitlePrincipalsImporter
   private
 
   def title_principal_parser(file)
-    file.each_with_index do |row, index|
-      if index == 0
-        @headers = create_headers(row)
-      elsif @count == 50000
+    @headers = create_headers(file.first)
+    file.each_with_index do |row|
+      row = parse_row(row)
+      if @count == 50000
         import
-      else
-        row = parse_row(row)
-        next if !content_hash[row[:tconst].to_sym]
+      elsif content_hash[row[:tconst]].present?
+        next unless can_add_data?(content_hash[row[:tconst]])
         collect(row)
         @count += 1
       end

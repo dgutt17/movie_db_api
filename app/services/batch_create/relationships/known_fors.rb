@@ -5,6 +5,7 @@ module BatchCreate
   module Relationships
     class KnownFors
       include Neo4j::QueryMethods
+      include ImporterParsingMethods
 
       attr_reader :relationships, :content_hash
     
@@ -15,7 +16,7 @@ module BatchCreate
     
       def collect(args)
         KnownFor.new(args).relationships.each do |relationship|
-          relationships << relationship if content_hash[relationship[:to].to_sym]
+          relationships << relationship if add_known_for?(relationship)
         end
         puts "Created known for relationship for: #{args[:nconst]}"
       end
@@ -35,6 +36,12 @@ module BatchCreate
           match_obj_two: '{imdb_id: row.to}', 
           rel_label: Labels::KNOWN_FOR
         }
+      end
+
+      def add_known_for?(relationship)
+        content = content_hash[relationship[:to]]
+
+        content.present? ? can_add_data?(content) : false
       end
     end
   end

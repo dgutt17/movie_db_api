@@ -4,7 +4,7 @@ class TitleBasicsImporter
     attr_accessor :headers, :content
 
     def initialize(content)
-        @content = content
+        @content = content.values
     end
 
     def run

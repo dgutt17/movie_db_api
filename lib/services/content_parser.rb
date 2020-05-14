@@ -11,7 +11,7 @@ class ContentParser
     create_content_hash
     adding_ratings_and_votes_to_content
 
-    content.values
+    content
   end
 
   private

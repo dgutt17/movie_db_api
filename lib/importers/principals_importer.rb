@@ -22,14 +22,13 @@ class PrincipalsImporter
   private
 
   def principle_parser(file)
-    file.each_with_index do |row, index|
-      if index == 0
-        @headers = create_headers(row)
-      elsif @count == 50000
+    @headers = create_headers(file.first)
+    file.each_with_index do |row|
+      if @count == 50000
         import
       else
         row = parse_row(row)
-        next if !principal_hash[row[:nconst].to_sym]
+        next if principal_hash[row[:nconst].to_sym].blank?
         collect(row)
         @count += 1
       end
