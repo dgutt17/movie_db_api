@@ -20,8 +20,12 @@ class Movie < Node
 
     private
 
+    # def parse_title
+    #     movie[:primaryTitle].gsub(/'/, '|')
+    # end
+
     def parse_title
-        movie[:primaryTitle].gsub(/'/, '|')
+        movie[:primaryTitle].gsub(/'/, "\'")
     end
 
     def parse_runtime
