@@ -2,8 +2,6 @@
 # for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
 
 require_relative 'config/application'
-# extend ImdbImporter::StaticNodes
-# extend ImdbImporter
 
 Rails.application.load_tasks
 

@@ -2,12 +2,6 @@ class ImdbImporter
 
     attr_reader :content_hash, :principal_hash
 
-    def initialize
-        # args.each do |importer|
-        #     importer.new.run
-        # end
-    end
-
     def batch_create
         import_static_nodes
         import_genres

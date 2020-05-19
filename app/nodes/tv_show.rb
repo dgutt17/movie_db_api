@@ -19,10 +19,6 @@ class TvShow < Node
 
   private
 
-  # def parse_title
-  #   tv_show[:primaryTitle].gsub(/'/, '|')
-  # end
-
   def parse_title
     tv_show[:primaryTitle].gsub(/'/, "\'")
   end
