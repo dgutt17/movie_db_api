@@ -22,10 +22,9 @@ module Neo4j
             unwind = 'UNWIND {list} as row'
             merge_node_one = "MERGE (from:#{args[:match_one_label]} #{args[:match_obj_one]})"
             merge_node_two = "MERGE (to:#{args[:match_two_label]} #{args[:match_obj_two]})"
-            create_relationship = "MERGE (from)-[rel:#{args[:rel_label]}]->(to) return from"
-            set_properties = 'SET rel += row.properties'
+            create_relationship = "MERGE (from)-[rel:#{args[:rel_label]}]->(to) ON CREATE SET rel += row.properties return from"
 
-            unwind + ' '  + merge_node_one + ' ' + merge_node_two + ' ' + ' '+ create_relationship + ' ' + set_properties
+            unwind + ' '  + merge_node_one + ' ' + merge_node_two + ' ' + ' '+ create_relationship 
         end
 
         def batch_update_nodes(label)

@@ -24,7 +24,7 @@ class TvShow < Node
   # end
 
   def parse_title
-    movie[:primaryTitle].gsub(/'/, "\'")
+    tv_show[:primaryTitle].gsub(/'/, "\'")
   end
 
   def parse_runtime
