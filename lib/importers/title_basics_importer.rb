@@ -25,15 +25,15 @@ class TitleBasicsImporter
     private
 
     def batch_create_movies
-        @batch_create_movies ||= BatchCreate::Nodes::Movies.new
+      @batch_create_movies ||= BatchCreate::Nodes.new(type: :movie)
     end
 
     def batch_create_tv_shows
-        @batch_create_tv_shows ||= BatchCreate::Nodes::TvShows.new
+      @batch_create_tv_shows ||= BatchCreate::Nodes.new(type: :tv_show)
     end
 
     def batch_create_categorized_as_relationships
-        @batch_create_categorized_as_relationships ||= BatchCreate::Relationships::CategorizedAs.new
+      @batch_create_categorized_as_relationships ||= BatchCreate::Relationships::CategorizedAs.new
     end
 
     def batch_create_released_relationships

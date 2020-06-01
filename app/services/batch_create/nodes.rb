@@ -18,7 +18,7 @@ module BatchCreate
     end
 
     def import
-      cypher_obj = $neo4j_session.query(batch_create_nodes(labels), list: nodes)
+      cypher_obj = $neo4j_session.query(batch_merge_nodes(labels), list: nodes)
       @nodes = []
 
       cypher_obj

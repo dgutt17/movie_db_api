@@ -15,7 +15,7 @@ module Neo4j
         end
 
         def batch_merge_nodes(label)
-            "UNWIND {list} as row MERGE (n:#{label} {imdb_id: row.id}) ON CREATE SET n += row.properties return n"
+            "UNWIND {list} as row MERGE (n:#{label} {imdb_id: row.id}) ON CREATE SET n += row.properties ON MATCH SET n += row.properties return n"
         end
 
         def batch_merge_relationships(args)
