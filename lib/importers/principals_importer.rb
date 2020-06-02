@@ -7,8 +7,6 @@ class PrincipalsImporter
   def initialize(content_hash, principal_hash)
     @file_path = ENV['PRINCIPALS_PATH']
     @content_hash = content_hash
-    @batch_create_known_for_relationships = batch_create_known_for_relationships
-    @batch_update_principals = batch_update_principals
     @count = 0
     @principal_hash = principal_hash
   end
@@ -38,23 +36,23 @@ class PrincipalsImporter
   end
 
   def batch_create_known_for_relationships
-    BatchCreate::Relationships::KnownFors.new(@content_hash)
+    @batch_create_known_for_relationships ||= BatchCreate::Relationships::KnownFors.new(@content_hash)
   end
 
   def batch_update_principals
-    BatchUpdate::Nodes::Principals.new
+    @batch_update_principals ||= BatchCreate::Nodes.new(type: :principal)
   end
 
   def collect(row)
-    @batch_update_principals.collect(row)
-    @batch_create_known_for_relationships.collect(row)
+    batch_update_principals.collect(row)
+    batch_create_known_for_relationships.collect(row)
   end
 
   def import
     @count = 0
     puts "unwinding.............................................."
-    @batch_update_principals.import
-    @batch_create_known_for_relationships.import
+    batch_update_principals.import
+    batch_create_known_for_relationships.import
     puts "done..................................................."
   end
 end
