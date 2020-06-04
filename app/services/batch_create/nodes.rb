@@ -1,5 +1,3 @@
-# require 'query_methods'
-
 module BatchCreate
   class Nodes
     include Neo4j::QueryMethods
