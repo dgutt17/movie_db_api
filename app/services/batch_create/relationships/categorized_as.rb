@@ -31,7 +31,7 @@ module BatchCreate
 
       def cypher_hash_movie
         {
-          match_one_label: Labels::MOVIE,
+          match_one_label: Labels::CONTENT,
           match_two_label: Labels::GENRE,
           match_obj_one: '{imdb_id: row.from}', 
           match_obj_two: '{name: row.to}', 

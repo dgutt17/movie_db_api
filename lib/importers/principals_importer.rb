@@ -40,7 +40,7 @@ class PrincipalsImporter
   end
 
   def batch_update_principals
-    @batch_update_principals ||= BatchCreate::Nodes.new(type: :principal)
+    @batch_update_principals ||= BatchMerge::Nodes.new(type: :principal)
   end
 
   def collect(row)

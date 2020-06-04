@@ -1,4 +1,4 @@
-module BatchCreate
+module BatchMerge
   class Nodes
     include Neo4j::QueryMethods
     include ImporterParsingMethods
