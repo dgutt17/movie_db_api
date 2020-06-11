@@ -41,7 +41,7 @@ class TitleBasicsImporter
     end
 
     def batch_create_rated_relationships
-        @batch_create_released_relationships ||= BatchMerge::Relationships.new(type: :rated, node_one_type: :content, node_two_type: :imdb_score)
+        @batch_create_rated_relationships ||= BatchMerge::Relationships.new(type: :rated, node_one_type: :content, node_two_type: :imdb_score)
      end
 
     def collect(row)

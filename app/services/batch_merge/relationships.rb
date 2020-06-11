@@ -20,6 +20,7 @@ module BatchMerge
     end
 
     def import
+      binding.pry
       $neo4j_session.query(batch_merge_relationships(cypher_hash), list: relationships.flatten)
       @relationships = []
     end
@@ -35,7 +36,7 @@ module BatchMerge
     end
 
     def put_statement(args)
-      @put_statement ||= puts "Created #{print_friendly_type} relationship #{args[:tconst]} -> #{args[:nconst]}"
+      @put_statement ||= "Created #{print_friendly_type} relationship #{args[:tconst]} -> #{args[:nconst]}"
     end
 
     def print_friendly_type

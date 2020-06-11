@@ -79,27 +79,27 @@ class TitlePrincipalsImporter
   end
 
   def batch_create_acted_in_relationships
-    @batch_create_acted_in_relationships ||= BatchCreate::Relationships::ActedIn.new
+    @batch_create_acted_in_relationships ||= BatchMerge::Relationships.new(type: :acted_in, node_one_type: :principal, node_two_type: :content)
   end
 
   def batch_create_created_cinematography_relationships
-    @batch_create_created_cinematography_relationships ||= BatchCreate::Relationships::CreatedCinematography.new
+    @batch_create_created_cinematography_relationships ||= BatchMerge::Relationships.new(type: :created_cinematography, node_one_type: :principal, node_two_type: :content)
   end
 
   def batch_create_produced_relationships
-    @batch_create_produced_relationships ||= BatchCreate::Relationships::Produced.new
+    @batch_create_produced_relationships ||= BatchMerge::Relationships.new(type: :produced, node_one_type: :principal, node_two_type: :content)
   end
 
   def batch_create_wrote_relationships
-    @batch_create_wrote_relationships ||= BatchCreate::Relationships::Wrote.new
+    @batch_create_wrote_relationships ||= BatchMerge::Relationships.new(type: :wrote, node_one_type: :principal, node_two_type: :content)
   end
 
   def batch_create_directed_relationships
-    @batch_create_directed_relationships ||= BatchCreate::Relationships::Directed.new
+    @batch_create_directed_relationships ||= BatchMerge::Relationships.new(type: :directed, node_one_type: :principal, node_two_type: :content)
   end
 
   def batch_create_composed_relationships
-    @batch_create_composed_relationships ||= BatchCreate::Relationships::Composed.new
+    @batch_create_composed_relationships ||= BatchMerge::Relationships.new(type: :composed, node_one_type: :principal, node_two_type: :content)
   end
 
   def add_to_principal_hash(cypher_objects)
