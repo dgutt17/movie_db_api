@@ -20,7 +20,6 @@ module BatchMerge
     end
 
     def import
-      binding.pry
       $neo4j_session.query(batch_merge_relationships(cypher_hash), list: relationships.flatten)
       @relationships = []
     end

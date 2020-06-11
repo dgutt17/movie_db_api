@@ -1,11 +1,11 @@
 class Rated < Relationship
 
-  private
-
-  def set_relationship
+  def relationship
     {from: args[:tconst], to: imdb_score_value, properties: {}}
   end
 
+  private
+  
   def imdb_score_value
     args[:averageRating].to_s.first.to_i
   end
