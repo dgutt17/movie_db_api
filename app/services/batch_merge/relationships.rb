@@ -2,17 +2,20 @@ module BatchMerge
   class Relationships
     include Neo4j::QueryMethods
     include ImporterParsingMethods
-    include Labels
-    
-    attr_reader :relationships, :type
+
+    attr_reader :relationships, :type, :node_one_type, :node_two_type
   
-    def initialize(type:)
+    def initialize(type:, node_one_type:, node_two_type:)
       @type = type
+      @node_one_type = node_one_type
+      @node_two_type = node_two_type
       @relationships = []
     end
   
     def collect(args)
-      relationships << klass.new(args).relationships
+      klass_instance = klass.new(args)
+
+      relationships << (klass_instance.try(:relationship) || klass_instance.try(:relationships))
       puts put_statement(args)
     end
 
@@ -28,7 +31,7 @@ module BatchMerge
     end
 
     def rel_label
-      @rel_label ||= type.to_s.upcase.constantize
+      @rel_label ||= "Labels::#{type.to_s.upcase}".constantize
     end
 
     def put_statement(args)
@@ -39,10 +42,18 @@ module BatchMerge
       @print_friendly_type ||= type.to_s.split('_').join(' ')
     end
 
+    def node_one_label
+      @node_one_label ||= "Labels::#{node_one_type.to_s.upcase}".constantize
+    end
+
+    def node_two_label
+      @node_two_label ||= "Labels::#{node_two_type.to_s.upcase}".constantize
+    end
+
     def cypher_hash
       {
-        match_one_label: Labels::CONTENT,
-        match_two_label: Labels::GENRE,
+        match_one_label: node_one_label,
+        match_two_label: node_two_label,
         match_obj_one: '{imdb_id: row.from}', 
         match_obj_two: '{name: row.to}', 
         rel_label: rel_label

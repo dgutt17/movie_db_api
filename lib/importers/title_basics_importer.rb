@@ -33,15 +33,15 @@ class TitleBasicsImporter
     end
 
     def batch_create_categorized_as_relationships
-      @batch_create_categorized_as_relationships ||= BatchMerge::Relationships.new(type: :categorized_as)
+      @batch_create_categorized_as_relationships ||= BatchMerge::Relationships.new(type: :categorized_as, node_one_type: :content, node_two_type: :genre)
     end
 
     def batch_create_released_relationships
-        @batch_create_released_relationships ||= BatchMerge::Relationships.new(type: :released)
+        @batch_create_released_relationships ||= BatchMerge::Relationships.new(type: :released, node_one_type: :content, node_two_type: :year)
     end
 
     def batch_create_rated_relationships
-        @batch_create_released_relationships ||= BatchMerge::Relationships.new(type: :rated)
+        @batch_create_released_relationships ||= BatchMerge::Relationships.new(type: :rated, node_one_type: :content, node_two_type: :imdb_score)
      end
 
     def collect(row)

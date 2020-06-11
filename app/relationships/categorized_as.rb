@@ -1,20 +1,19 @@
 class CategorizedAs < Relationship
-    attr_accessor :relationships
-    def initialize(content)
-        imdb_id = content[:tconst]
-        
-        @relationships = fetch_genres(content[:genres]).map do |genre|
-            {from: imdb_id, to: genre, properties: {}}
-        end
+    def relationships
+      @relationships ||= parse_genres(args[:genres]).map { |genre| {from: imdb_id, to: genre, properties: {}} }
+    end
+
+    def relationship
+      nil
     end
 
     private
 
-    def parse_genre(genre)
-        genre.gsub(/[^0-9a-z ]/i, '')
+    def parse_genres(genres)
+      genres.split(",").map { |genre| genre.gsub(/[^0-9a-z ]/i, '') }
     end
 
-    def fetch_genres(genres)
-        genres.split(",").map {|genre| parse_genre(genre)}
+    def imdb_id
+      @imdb_id ||= args[:tconst]
     end
 end
